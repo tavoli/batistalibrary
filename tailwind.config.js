@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
@@ -11,6 +13,9 @@ export default {
           600: '#CF3B00',
           700: '#8B1300',
         },  
+      },
+      fontFamily: {
+        sans: ['Titillium Web',...defaultTheme.fontFamily.sans],
       },
     }
   },
