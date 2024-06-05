@@ -3,7 +3,7 @@
 </script>
 
 <main class="grid grid-rows-[0.5fr_1fr] min-h-screen">
-   <div class="self-center grid gap-4">
+   <div class="self-end grid gap-4">
      <h1 class="text-center text-2xl text-gray-600">Cadastrar</h1>
      <p class="text-center text-2xl text-gray-600">Crie sua conta</p>
    </div>
