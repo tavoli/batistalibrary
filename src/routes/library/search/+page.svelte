@@ -1,5 +1,8 @@
 <script>
   import Tabs from '$lib/tabs.svelte'
+  import Book from '$lib/book.svelte'
+  import Search from '$lib/search.svelte'
+  import data from '$lib/books.json'
 
   const [t1, t2] = ['Todos', 'Livros emprestados'];
 
@@ -12,10 +15,15 @@
 
 <main class="p-4">
   <Tabs tabs={[t1, t2]} {active} on:select={e => handleSelect(e.detail)}>
+    <Search />
+
     {#if active === t1}
-      <div>
-        <h2>Todos</h2>
-        <p>This is the content for Todos.</p>
+      <div class="flex flex-col gap-4">
+        <ul class="space-y-3">
+          {#each data as book}
+            <Book {...book} />
+          {/each}
+        </ul>
       </div>
     {/if}
 
