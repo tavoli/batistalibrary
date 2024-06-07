@@ -1,5 +1,6 @@
 <script>
   import { open } from '$lib/store'
+  import { APP } from '$lib/constants'
 
   export let id = ''
   export let author = ''
@@ -7,7 +8,7 @@
   export let title = ''
 
   const handle = () => {
-    open('popup', id)
+    open(APP.POPUP, id)
   }
 </script>
 

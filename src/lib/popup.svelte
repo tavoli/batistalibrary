@@ -1,34 +1,23 @@
 <script>
-  import { open } from '$lib/store'
+  import Options from '$lib/options.svelte'
+  import ReturnForm from '$lib/form-return.svelte'
+  import BorrowForm from '$lib/form-borrow.svelte'
+  import FilterForm from '$lib/form-filter.svelte'
 
-  const handle = () => {
-    open('menu')
-  }
+  import { open, openedBorrow, openedReturn, openedFilter } from '$lib/store'
+  import { APP } from '$lib/constants'
 </script>
 
-<div class="flex justify-around">
-  <ul>
-    <li class="text-red-700 text-2xl" on:click={() => goto(item.page)}>
-      Devolver <br />
-      <span class="text-xs text-gray-500">
-        devolva o livro emprestado
-      </span>
-    </li>
-    <li class="text-red-700 text-2xl" on:click={() => goto(item.page)}>
-      Emprestar <br />
-      <span class="text-xs text-gray-500">
-        empreste um livro
-      </span>
-    </li>
-    <li class="text-red-700 text-2xl" on:click={() => goto(item.page)}>
-      Editar <br/>
-      <span class="text-xs text-gray-500">
-        edite o livro
-      </span>
-    </li>
-  </ul>
+<div class="flex justify-around flex flex-col px-4 py-2">
+  <hr class="w-2/12 h-1 bg-red-700 border-0 self-center" />
 
-  <button on:click={handle} class="text-red-700 text-xl">
-    cancelar
-  </button>
+  {#if $openedBorrow}
+    <BorrowForm />
+  {:else if $openedReturn}
+    <ReturnForm />
+  {:else if $openedFilter}
+    <FilterForm />
+  {:else}
+    <Options />
+  {/if}
 </div>
