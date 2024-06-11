@@ -6,5 +6,6 @@ export const APP = {
   POPUP_RETURN: 'popup.return',
   POPUP_FILTER: 'popup.filter',
 
-  ROUTE_EDIT: 'edit/:id',
+  ROUTE_EDIT: 'edit/[id]',
+  ROUTE_BOOK: '/book/[id]',
 }

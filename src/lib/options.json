@@ -1,0 +1,18 @@
+[
+  {
+    "id": "RETURN",
+    "title": "DEVOLVER",
+    "description": "devolva o livro emprestado"
+  },
+  {
+    "id": "BORROW",
+    "title": "EMPRESTAR",
+    "description": "empreste um livros disponíveis"
+  },
+  {
+    "id": "EDIT",
+    "title": "EDITAR",
+    "description": "faça alterações no livro"
+  }
+]
+

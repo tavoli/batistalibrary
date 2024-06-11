@@ -2,6 +2,23 @@
   import { goto } from '$app/navigation'
   import { close, open, menu } from '$lib/store'
   import { APP } from '$lib/constants'
+  import data from './options.json';
+
+  const handle = (id) => {
+    switch (id) {
+      case 'RETURN':
+        open(APP.POPUP_RETURN)
+        break;
+      case 'BORROW':
+        open(APP.POPUP_BORROW)
+        break
+      case 'EDIT':
+        goto(APP.ROUTE_EDIT)
+        break
+      default:
+        throw new Error('unknown popop')
+    }
+  }
 
   const cancel = () => {
     close(APP.POPUP)
@@ -9,24 +26,14 @@
 </script>
 
 <ul class="grid gap-3">
-  <li class="text-red-700 grid" on:click={() => open(APP.POPUP_RETURN)}>
-    <span class="font-semibold text-lg">DEVOLVER</span>
+  {#each data as item}
+  <li class="text-red-700 grid cursor-pointer" on:click={() => handle(item.id)}>
+    <span class="font-semibold text-lg">{item.title}</span>
     <span class="text-xs text-gray-500">
-      devolva o livro emprestado
+      {item.description}
     </span>
   </li>
-  <li class="text-red-700 grid" on:click={() => open(APP.POPUP_BORROW)}>
-    <span class="font-semibold text-lg">EMPRESTAR</span>
-    <span class="text-xs text-gray-500">
-      empreste um livros disponíveis
-    </span>
-  </li>
-  <li class="text-red-700 grid" on:click={() => goto(APP.ROUTE_EDIT, $menu.args)}>
-    <span class="font-semibold text-lg">EDITAR</span>
-    <span class="text-xs text-gray-500">
-      faça alterações no livro
-    </span>
-  </li>
+  {/each}
 </ul>
 
 <button on:click={cancel} class="text-red-500 text-xl">

@@ -11,11 +11,11 @@
   }
 </script>
 
-<div class="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md space-y-4">
-  <h2 class="text-xl font-medium text-red-600">Devolver</h2>
+<div>
+  <h2 class="text-xl font-semibold text-red-700 mb-1">Devolver</h2>
   <p>Você está fazendo a devolução do livro xxx em xx de xx. Ao clicar em confirmar o livro ficará disponível novamente.</p>
-  <div class="flex justify-between">
+  <div class="flex justify-between mx-auto w-6/12 mt-4">
     <button class="text-gray-600" on:click={cancel}>Cancelar</button>
-    <button class="text-red-600" on:click={confirm}>Confirmar</button>
+    <button class="text-red-700 font-semibold" on:click={confirm}>Confirmar</button>
   </div>
 </div>

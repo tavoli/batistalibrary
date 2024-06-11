@@ -13,7 +13,7 @@
   };
 </script>
 
-<main class="p-4">
+<main>
   <Tabs tabs={[t1, t2]} {active} on:select={e => handleSelect(e.detail)}>
     <Search />
 

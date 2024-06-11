@@ -7,6 +7,7 @@ export default {
     extend: {
       colors: {
         red: {
+          200: '#FDF5F2',
           300: '#E79D80',
           400: '#E69879',
           500: '#E04500',
