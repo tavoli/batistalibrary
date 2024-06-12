@@ -11,7 +11,7 @@
   };
 </script>
 
-<div class="mt-10 p-16">
+<div class="mt-10 p-4">
   <h1 class="text-xl mb-4">ADICIONAR LIVRO</h1>
 
   <div class="mb-4 mt-16">

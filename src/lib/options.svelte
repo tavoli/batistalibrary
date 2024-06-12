@@ -13,7 +13,7 @@
         open(APP.POPUP_BORROW)
         break
       case 'EDIT':
-        goto(APP.ROUTE_EDIT)
+        goto(APP.ROUTE_EDIT.replace('[id]', $menu.args))
         break
       default:
         throw new Error('unknown popop')
