@@ -1,3 +1,5 @@
+import { DATA, ID } from "../client";
+
 export const APP = {
   MENU: 'menu',
 
@@ -10,4 +12,7 @@ export const APP = {
   ROUTE_BOOK: '/book/[id]',
   ROUTE_UPLOAD: '/upload',
   ROUTE_LIST: '/library/list',
+
+
+  IMAGE: `https://cdn.sanity.io/images/${ID}/${DATA}/[asset].200x200.jpg`
 }

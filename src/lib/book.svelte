@@ -3,25 +3,25 @@
   import { APP } from '$lib/constants'
   import { open } from '$lib/store'
 
-  export let id = ''
-  export let author = ''
-  export let thumb = ''
-  export let title = ''
+  export let _id
+  export let title
+  export let author
+  export let imageUrl = 'https://placehold.co/150?text=sem foto'
 
   const handleGoto = () => {
-    goto(APP.ROUTE_BOOK.replace('[id]', id))
+    goto(APP.ROUTE_BOOK.replace('[id]', _id))
   }
 
   const handlePopup = () => {
-    open(APP.POPUP, id)
+    open(APP.POPUP, _id)
   }
 </script>
 
 <li class="flex gap-2 cursor-pointer">
-  <img class="w-4/12" src={thumb} alt={title} on:click={handleGoto} />
+  <img class="w-4/12" src={imageUrl} alt={title} on:click={handleGoto} />
   <div class="flex flex-1 flex-col gap-1" on:click={handleGoto}>
     <h3 class="text-lg">{title}</h3>
-    <p class="text-lg">{author}</p>
+    <p class="text-lg">{author.name}</p>
   </div>
   <div class="w-8 h-8" on:click={handlePopup}>
     <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">

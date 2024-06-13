@@ -2,7 +2,9 @@
   import Tabs from '$lib/tabs.svelte'
   import Book from '$lib/book.svelte'
   import Search from '$lib/search.svelte'
-  import data from '$lib/books.json'
+
+  export let data;
+  console.log(data);
 
   const [t1, t2] = ['Todos', 'Livros emprestados'];
 
@@ -20,7 +22,7 @@
     {#if active === t1}
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
-          {#each data as book}
+          {#each data.books as book}
             <Book {...book} />
           {/each}
         </ul>
