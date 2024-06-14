@@ -1,16 +1,23 @@
 import client from "../client"
 
 export async function getBooks() {
-  const books = await client.fetch(`*[_type == "books"] {
+  const attrs = `
     _id,
     title,
+    available,
     "imageUrl": image.asset->url,
     author-> {
       name
     }
-  }`)
+  `;
 
-  return books
+  const query = `*[_type == "books"] { ${attrs} }`
+
+  const result = await client.fetch(query);
+  return { 
+    available: result.filter((b: any) => b.available),
+    unavailable : result.filter((b: any) =>!b.available)
+  };
 }
 
 export async function postBook(book: any) {

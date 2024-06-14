@@ -1,16 +1,16 @@
 [
   {
-    "id": "RETURN",
+    "id": "option.return",
     "title": "DEVOLVER",
     "description": "devolva o livro emprestado"
   },
   {
-    "id": "BORROW",
+    "id": "option.borrow",
     "title": "EMPRESTAR",
     "description": "empreste um livros disponíveis"
   },
   {
-    "id": "EDIT",
+    "id": "option.edit",
     "title": "EDITAR",
     "description": "faça alterações no livro"
   }

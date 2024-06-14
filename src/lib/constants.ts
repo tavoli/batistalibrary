@@ -13,6 +13,9 @@ export const APP = {
   ROUTE_UPLOAD: '/upload',
   ROUTE_LIST: '/library/list',
 
+  OPTION_BORROW: 'option.borrow',
+  OPTION_RETURN: 'option.return',
+  OPTION_EDIT: 'option.edit',
 
   IMAGE: `https://cdn.sanity.io/images/${ID}/${DATA}/[asset].200x200.jpg`
 }

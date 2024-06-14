@@ -1,17 +1,19 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
 import { APP } from '$lib/constants'
 
 type Menu = {
-  args: any;
   type: string;
+  options: string[];
+  id: any;
 }
 
 export const menu = writable<Menu>({ 
-  args: null, 
-  type: APP.MENU 
+  type: APP.MENU,
+  options: [],
+  id: null, 
 });
 
-export const open = (type: Menu['type'], args: Menu['args'] = null): void => {
+export const open = (args: Menu | Menu['type']): void => {
   const types = [
     APP.POPUP,
     APP.POPUP_FILTER,
@@ -20,25 +22,31 @@ export const open = (type: Menu['type'], args: Menu['args'] = null): void => {
     APP.MENU
   ];
 
-  if (types.includes(type)) {
-    menu.set({ args, type });
+  const isValidType = (type: string): boolean => types.includes(type);
+
+  if (typeof args === 'string') {
+    if (isValidType(args)) {
+      menu.set({ ...get(menu), type: args });
+    } else {
+      console.warn(`Unhandled type: ${args}`);
+    }
+  } else if (isValidType(args.type)) {
+    menu.set({ ...get(menu), ...args });
   } else {
-    console.warn(`Unhandled type: ${type}`);
+    console.warn(`Unhandled type: ${args.type}`);
   }
-}
+};
 
 export const close = (type: Menu['type']): void => {
   switch (type) {
     case APP.POPUP_FILTER:
     case APP.POPUP_BORROW:
     case APP.POPUP_RETURN:
-      menu.set({ args: null, type: APP.POPUP });
+      menu.set({ ...get(menu), type: APP.POPUP });
       break;
-
     case APP.POPUP:
-      menu.set({ args: null, type: APP.MENU });
+      menu.set({ type: APP.MENU, options: [], id: null });
       break;
-
     default:
       console.warn(`Unhandled type: ${type}`);
   }
