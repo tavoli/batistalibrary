@@ -1,5 +1,11 @@
 import client from "../client"
 
+export async function getPostDeps() {
+  const categories = await client.fetch(`*[_type == "categories"] { _id, name }`)
+  const authors = await client.fetch(`*[_type == "author"] { _id, name }`)
+  return { categories, authors }
+}
+
 export async function getBooks() {
   const attrs = `
     _id,
@@ -20,12 +26,22 @@ export async function getBooks() {
   };
 }
 
-export async function postBook(book: any) {
-  const result = client.create(book)
+export async function updateBookAvailability(id: string, available: boolean) {
+  const result = client.patch(id).set({ available })
   return result
 }
 
-export async function updateBook(_id, book) {
-  const result = client.patch(_id).set(book)
+export async function updateBookTitle(id: string, title: string) {
+  const result = client.patch(id).set({ title })
+  return result
+}
+
+export async function updateBookAuthor(id: string, author: string) {
+  const result = client.patch(id).set({ author })
+  return result
+}
+
+export async function updateBookDescription(id: string, description: string) {
+  const result = client.patch(id).set({ description })
   return result
 }
