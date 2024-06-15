@@ -1,9 +1,14 @@
 import client from "../client"
 
 export async function getPostDeps() {
-  const categories = await client.fetch(`*[_type == "categories"] { _id, name }`)
-  const authors = await client.fetch(`*[_type == "author"] { _id, name }`)
-  return { categories, authors }
+  const query = await client.fetch(`
+    *[_type == "categories" || _type == "author"] { 
+      _type, _id, name 
+  }`)
+  return { 
+    categories: query.filter((q: any) => q._type === "categories"), 
+    authors: query.filter((q: any) => q._type === "author") 
+  }
 }
 
 export async function getBooks() {
