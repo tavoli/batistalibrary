@@ -1,37 +1,35 @@
 <script>
+  import { onMount } from 'svelte'
   import { APP } from '$lib/constants'
-  import { close } from '$lib/store'
+  import { close, library } from '$lib/store'
+  import { getLibrary, getCategories } from '$lib/api'
 
   let selectedFilter = '';
+  let categories = [];
 
-  function confirm() {
+  async function confirm() {
     close(APP.POPUP)
+    library.set(await getLibrary(selectedFilter))
   }
 
   function cancel() {
     close(APP.POPUP)
   }
+
+  onMount(async () => {
+    categories = [{ name: 'Todos' }, ...await getCategories()]
+  })
 </script>
 
 <div class="space-y-4">
   <h2 class="text-xl font-semibold text-red-700 mb-1">Filtrar por</h2>
   <div class="grid items-center">
-    <label class="col-start-1 row-start-1">
-      <input type="radio" name="filter" value="teologia1" bind:group={selectedFilter} class="mr-2" />
-      teologia
-    </label>
-    <label class="col-start-1 row-start-2">
-      <input type="radio" name="filter" value="teologia2" bind:group={selectedFilter} class="mr-2" />
-      teologia
-    </label>
-    <label class="col-start-2 row-start-1">
-      <input type="radio" name="filter" value="teologia3" bind:group={selectedFilter} class="mr-2" />
-      teologia
-    </label>
-    <label class="col-start-2 row-start-2">
-      <input type="radio" name="filter" value="teologia4" bind:group={selectedFilter} class="mr-2" />
-      teologia
-    </label>
+    {#each categories as category, index}
+      <label>
+        <input type="radio" name="filter" value={category.name} bind:group={selectedFilter} class="mr-2" />
+        {category.name}
+      </label>
+    {/each}
   </div>
   <div class="flex justify-between">
     <button class="text-gray-600" on:click={cancel}>Cancelar</button>

@@ -11,7 +11,7 @@ export async function getPostDeps() {
   }
 }
 
-export async function getBooks() {
+export async function getLibrary(category = '') {
   const attrs = `
     _id,
     title,
@@ -19,34 +19,28 @@ export async function getBooks() {
     "imageUrl": image.asset->url,
     author-> {
       name
+    },
+    category-> {
+      name
     }
   `;
 
-  const query = `*[_type == "books"] { ${attrs} }`
+  const query = category && category != 'Todos'
+    ? `*[_type == "books"  && "${category}" in categories[]->name] { ${attrs} }`
+    : `*[_type == "books"] { ${attrs} }`;
 
   const result = await client.fetch(query);
-  return { 
+
+  return {
     available: result.filter((b: any) => b.available),
-    unavailable : result.filter((b: any) =>!b.available)
+    borrowed: result.filter((b: any) => !b.available)
   };
 }
 
-export async function updateBookAvailability(id: string, available: boolean) {
-  const result = client.patch(id).set({ available })
-  return result
-}
-
-export async function updateBookTitle(id: string, title: string) {
-  const result = client.patch(id).set({ title })
-  return result
-}
-
-export async function updateBookAuthor(id: string, author: string) {
-  const result = client.patch(id).set({ author })
-  return result
-}
-
-export async function updateBookDescription(id: string, description: string) {
-  const result = client.patch(id).set({ description })
-  return result
+export async function getCategories() {
+  const query = await client.fetch(`
+    *[_type == "categories"] { 
+      name 
+  }`)
+  return query
 }

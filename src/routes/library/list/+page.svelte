@@ -3,10 +3,8 @@
   import Book from '$lib/book.svelte'
   import Search from '$lib/search.svelte'
   import { APP } from '$lib/constants'
-  import { open } from '$lib/store'
+  import { open, library } from '$lib/store'
   import { goto } from '$app/navigation'
-
-  export let data;
 
   const [t1, t2] = ['Todos', 'Livros emprestados'];
 
@@ -30,7 +28,7 @@
     {#if active === t1}
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
-          {#each data.books.available as book}
+          {#each $library.available as book}
             <Book 
               imageUrl={useImage(book)} 
               title={book.title} 
@@ -50,7 +48,7 @@
     {#if active === t2}
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
-          {#each data.books.unavailable as book}
+          {#each $library.borrowed as book}
             <Book 
               imageUrl={useImage(book)} 
               title={book.title} 

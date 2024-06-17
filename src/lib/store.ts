@@ -7,11 +7,18 @@ type Menu = {
   id: any;
 }
 
+type Library = {
+  available: any[];
+  borrowed: any[];
+}
+
 export const menu = writable<Menu>({ 
   type: APP.MENU,
   options: [],
   id: null, 
 });
+
+export const library = writable<Library>({ available: [], borrowed: [] });
 
 export const open = (args: Menu | Menu['type']): void => {
   const types = [

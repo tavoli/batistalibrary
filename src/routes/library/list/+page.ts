@@ -1,7 +1,6 @@
-import { getBooks } from "$lib/api"
+import { getLibrary } from "$lib/api"
+import { library } from "$lib/store"
 
-/** @type {import('./$types').PageLoad} */
 export async function load() {  
-  const books = await getBooks()
-  return { books }
+  library.set(await getLibrary())
 }
