@@ -74,3 +74,17 @@ export const openedFilter = derived(menu, ($m) =>
 export const openedMenu = derived(menu, ($m) =>  
   $m.type === APP.MENU
 )
+
+function createSetStore(initialValue = []) {
+  const _set = writable(new Set(initialValue));
+
+  return {
+    ..._set,
+    add: (value) => _set.update(old => new Set(old).add(value)),
+    size: () => get(_set).size,
+    clear: () => _set.set(new Set()),
+    has: (value) => get(_set).has(value),
+  };
+}
+
+export const ReactSet = createSetStore;
