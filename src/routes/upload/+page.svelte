@@ -1,6 +1,6 @@
 <script>
-  import client from '../../client.ts'
-  import { ReactSet } from'$lib/store';
+  import { post } from '$lib/api'
+  import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
   let files = '';
@@ -14,21 +14,7 @@
 
   export let data
 
-  const errors = ReactSet();
-
-  async function post(data) {
-    const response = await client.create({
-      _type: 'books',
-      ...data
-    });
-
-    if (response.error) {
-      console.error('Error creating book:', response.error);
-      return;
-    }
-
-    alert('Livro criado com sucesso!');
-  }
+  const errors = NewSet();
 
   function validate() {
     errors.clear();
@@ -111,7 +97,12 @@
       data.image = image;
     }
 
-    post(data);
+    const res = await post(data);
+    if (res.error) {
+      console.error('Error creating book:', res.error);
+    } else {
+      alert('Livro adicionado com sucesso!');
+    }
   }
 
   function handlePreview(event) {

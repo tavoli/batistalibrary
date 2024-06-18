@@ -1,4 +1,5 @@
 import client from "../client"
+import type { Book } from "./store";
 
 export async function getPostDeps() {
   const query = await client.fetch(`
@@ -11,7 +12,7 @@ export async function getPostDeps() {
   }
 }
 
-export async function getLibrary(category = '') {
+export async function getLibrary(category = ''): Promise<Book[]> {
   const attrs = `
     _id,
     title,
@@ -30,11 +31,7 @@ export async function getLibrary(category = '') {
     : `*[_type == "books"] { ${attrs} }`;
 
   const result = await client.fetch(query);
-
-  return {
-    available: result.filter((b: any) => b.available),
-    borrowed: result.filter((b: any) => !b.available)
-  };
+  return result;
 }
 
 export async function getCategories() {
@@ -43,4 +40,14 @@ export async function getCategories() {
       name 
   }`)
   return query
+}
+
+export async function post(data: any) {
+  const response = await client.create(data);
+  return response;
+}
+
+export async function update(id: string, data: any) {
+  const response = await client.patch(id).set(data).commit();
+  return response;
 }

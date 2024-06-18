@@ -28,18 +28,20 @@
     {#if active === t1}
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
-          {#each $library.available as book}
-            <Book 
-              imageUrl={useImage(book)} 
-              title={book.title} 
-              author={book.author} 
-              on:touch={() => goto(APP.ROUTE_BOOK.replace('[id]', book._id))}
-              on:option={() => open({
-                type: APP.POPUP,
-                options: [APP.OPTION_BORROW, APP.OPTION_EDIT],
-                id: book._id
-              })}
-            />
+          {#each $library.ids as id}
+            {#if $library.available[id]}
+              <Book 
+                imageUrl={useImage($library.available[id])} 
+                title={$library.available[id].title} 
+                author={$library.available[id].author} 
+                on:touch={() => goto(APP.ROUTE_BOOK.replace('[id]', id))}
+                on:option={() => open({
+                  type: APP.POPUP,
+                  options: [APP.OPTION_BORROW, APP.OPTION_EDIT],
+                  id
+                })}
+              />
+            {/if}
           {/each}
         </ul>
       </div>
@@ -48,18 +50,20 @@
     {#if active === t2}
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
-          {#each $library.borrowed as book}
-            <Book 
-              imageUrl={useImage(book)} 
-              title={book.title} 
-              author={book.author} 
-              on:touch={() => goto(APP.ROUTE_BOOK.replace('[id]', book._id))}
-              on:option={() => open({
-                type: APP.POPUP,
-                options: [APP.OPTION_RETURN, APP.OPTION_EDIT],
-                id: book._id
-              })}
-            />
+          {#each $library.ids as id}
+            {#if $library.borrowed[id]}
+              <Book 
+                imageUrl={useImage($library.borrowed[id])} 
+                title={$library.borrowed[id].title} 
+                author={$library.borrowed[id].author} 
+                on:touch={() => goto(APP.ROUTE_BOOK.replace('[id]', id))}
+                on:option={() => open({
+                  type: APP.POPUP,
+                  options: [APP.OPTION_RETURN, APP.OPTION_EDIT],
+                  id
+                })}
+              />
+            {/if}
           {/each}
         </ul>
       </div>

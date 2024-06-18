@@ -1,4 +1,4 @@
-import { writable, derived, get } from 'svelte/store';
+import { writable, type Writable, derived, get } from 'svelte/store';
 import { APP } from '$lib/constants'
 
 type Menu = {
@@ -7,9 +7,23 @@ type Menu = {
   id: any;
 }
 
+export type Book = {
+  _id: string;
+  title: string;
+  available: boolean;
+  imageUrl: string;
+  author: {
+    name: string;
+  };
+  category: {
+    name: string;
+  };
+}
+
 type Library = {
-  available: any[];
-  borrowed: any[];
+  available: Record<string, Book>;
+  borrowed: Record<string, Book>;
+  ids: string[];
 }
 
 export const menu = writable<Menu>({ 
@@ -18,7 +32,31 @@ export const menu = writable<Menu>({
   id: null, 
 });
 
-export const library = writable<Library>({ available: [], borrowed: [] });
+export const library = writable<Library>({ 
+  available: {}, 
+  borrowed: {},
+  ids: [],
+});
+
+export function borrowBook(id: string) {
+  library.update(cur => {
+    if (cur.available[id]) {
+      cur.borrowed[id] = cur.available[id];
+      delete cur.available[id];
+    }
+    return cur;
+  });
+}
+
+export function returnBook(id: string) {
+  library.update(cur => {
+    if (cur.borrowed[id]) {
+      cur.available[id] = cur.borrowed[id];
+      delete cur.borrowed[id];
+    }
+    return cur;
+  });
+}
 
 export const open = (args: Menu | Menu['type']): void => {
   const types = [
@@ -82,16 +120,20 @@ export const openedMenu = derived(menu, ($m) =>
   $m.type === APP.MENU
 )
 
-function createSetStore(initialValue = []) {
-  const _set = writable(new Set(initialValue));
+function createSetStore<T>(initialValue: T[] = []) {
+  const _set: Writable<Set<T>> = writable(new Set(initialValue));
 
   return {
     ..._set,
-    add: (value) => _set.update(old => new Set(old).add(value)),
+    add: (value: T) => _set.update(old => {
+      const newSet = new Set(old);
+      newSet.add(value);
+      return newSet;
+    }),
     size: () => get(_set).size,
     clear: () => _set.set(new Set()),
-    has: (value) => get(_set).has(value),
+    has: (value: T) => get(_set).has(value),
   };
 }
 
-export const ReactSet = createSetStore;
+export const NewSet = createSetStore;
