@@ -42,6 +42,7 @@ export function borrowBook(id: string) {
   library.update(cur => {
     if (cur.available[id]) {
       cur.borrowed[id] = cur.available[id];
+      cur.borrowed[id].available = false;
       delete cur.available[id];
     }
     return cur;
@@ -52,6 +53,7 @@ export function returnBook(id: string) {
   library.update(cur => {
     if (cur.borrowed[id]) {
       cur.available[id] = cur.borrowed[id];
+      cur.available[id].available = true;
       delete cur.borrowed[id];
     }
     return cur;
