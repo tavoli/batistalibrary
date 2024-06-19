@@ -1,7 +1,7 @@
 import client from "../client"
 import type { Book } from "./store";
 
-export async function getPostDeps() {
+export async function getPostOrEditDeps() {
   const query = await client.fetch(`
     *[_type == "categories" || _type == "author"] { 
       _type, _id, name 
@@ -19,9 +19,7 @@ export async function getLibrary(category = ''): Promise<Book[]> {
     available,
     "imageUrl": image.asset->url,
     author-> {
-      name
-    },
-    category-> {
+      _id,
       name
     }
   `;
@@ -32,6 +30,35 @@ export async function getLibrary(category = ''): Promise<Book[]> {
 
   const result = await client.fetch(query);
   return result;
+}
+
+export async function fetchBook(id: string) {
+  const response = await client.fetch(`
+    *[_type == "books" && _id == "${id}"] { 
+      _id,
+      isbn,
+      title,
+      author-> {
+        _id,
+        name
+      },
+      date_published,
+      description,
+      available,
+      "categories": categories[]->_id,
+      "imageUrl": image.asset->url,
+    }`)
+
+    if (response.error) {
+      console.error(response.error);
+      return null;
+    }
+
+    if (response.length === 0) {
+      return null;
+    }
+
+    return response[0];
 }
 
 export async function getCategories() {

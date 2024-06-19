@@ -3,7 +3,7 @@
   import Book from '$lib/book.svelte'
   import Search from '$lib/search.svelte'
   import { APP } from '$lib/constants'
-  import { open, library } from '$lib/store'
+  import { open, library, isAvailableBook, isBorrowedBook, getBook } from '$lib/store'
   import { goto } from '$app/navigation'
 
   const [t1, t2] = ['Todos', 'Livros emprestados'];
@@ -14,7 +14,7 @@
     active = id;
   };
 
-  const useImage = (book) => {
+  const getImage = (book) => {
     const serverImage = `${book.imageUrl}?w=200&h=200&fit=min&fm=webp`;
     const defaultImage = 'https://placehold.co/200?text=sem foto';
     return book.imageUrl ? serverImage : defaultImage;
@@ -29,11 +29,11 @@
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
           {#each $library.ids as id}
-            {#if $library.available[id]}
+            {#if isAvailableBook(id)}
               <Book 
-                imageUrl={useImage($library.available[id])} 
-                title={$library.available[id].title} 
-                author={$library.available[id].author} 
+                imageUrl={getImage(getBook(id))} 
+                title={getBook(id, 'title')} 
+                author={getBook(id, 'author')} 
                 on:touch={() => goto(APP.ROUTE_BOOK.replace('[id]', id))}
                 on:option={() => open({
                   type: APP.POPUP,
@@ -51,11 +51,11 @@
       <div class="flex flex-col gap-4">
         <ul class="space-y-3">
           {#each $library.ids as id}
-            {#if $library.borrowed[id]}
+            {#if isBorrowedBook(id)}
               <Book 
-                imageUrl={useImage($library.borrowed[id])} 
-                title={$library.borrowed[id].title} 
-                author={$library.borrowed[id].author} 
+                imageUrl={getImage(getBook(id))} 
+                title={getBook(id, 'title')} 
+                author={getBook(id, 'author')} 
                 on:touch={() => goto(APP.ROUTE_BOOK.replace('[id]', id))}
                 on:option={() => open({
                   type: APP.POPUP,

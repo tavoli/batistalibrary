@@ -60,6 +60,24 @@ export function returnBook(id: string) {
   });
 }
 
+function getValueAtPath(obj: any, path: string): any {
+  return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+}
+
+export function getBook(id: string, path = '') {
+  const book = get(library).available[id] ?? get(library).borrowed[id];
+  if (!book) return null;
+  return path ? getValueAtPath(book, path) : book;
+}
+
+export function isAvailableBook(id: string) {
+  return Boolean(get(library).available[id]);
+}
+
+export function isBorrowedBook(id: string) {
+  return Boolean(get(library).borrowed[id]);
+}
+
 export const open = (args: Menu | Menu['type']): void => {
   const types = [
     APP.POPUP,

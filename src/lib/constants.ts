@@ -1,5 +1,3 @@
-import { DATA, ID } from "../client";
-
 export const APP = {
   MENU: 'menu',
 
@@ -10,12 +8,12 @@ export const APP = {
 
   ROUTE_EDIT: '/edit/[id]',
   ROUTE_BOOK: '/book/[id]',
-  ROUTE_UPLOAD: '/upload',
+  ROUTE_POST: '/post',
   ROUTE_LIST: '/library/list',
 
   OPTION_BORROW: 'option.borrow',
   OPTION_RETURN: 'option.return',
   OPTION_EDIT: 'option.edit',
 
-  IMAGE: `https://cdn.sanity.io/images/${ID}/${DATA}/[asset].200x200.jpg`
+  NO_IMAGE: 'https://placehold.co/200?text=sem capa'
 }

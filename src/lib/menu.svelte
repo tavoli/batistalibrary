@@ -13,9 +13,9 @@
         open(APP.POPUP_FILTER)
         active = 'SEARCH'
         break
-      case 'UPLOAD':
-        goto(APP.ROUTE_UPLOAD)
-        active = 'UPLOAD'
+      case 'POST':
+        goto(APP.ROUTE_POST)
+        active = 'POST'
         break
       case 'LIST':
         goto(APP.ROUTE_LIST)

@@ -1,5 +1,6 @@
 <script>
   import { post } from '$lib/api'
+  import { APP } from '$lib/constants';
   import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
@@ -34,31 +35,24 @@
     return errors.size() === 0;
   }
 
-  async function handleSubmit() {
-    if (!validate()) {
-      return;
-    }
+  async function uploadFile(file) {
+    const readFileAsArrayBuffer = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
 
-    const file = files[0];
-    let image = null;
+        reader.onloadend = () => {
+          if (reader.error) {
+            reject(reader.error);
+          } else {
+            resolve(reader.result);
+          }
+        };
+
+        reader.readAsArrayBuffer(file);
+      });
+    };
 
     try {
-      const readFileAsArrayBuffer = (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-
-          reader.onloadend = () => {
-            if (reader.error) {
-              reject(reader.error);
-            } else {
-              resolve(reader.result);
-            }
-          };
-
-          reader.readAsArrayBuffer(file);
-        });
-      };
-
       const buffer = await readFileAsArrayBuffer(file);
       const arrayBuffer = new Uint8Array(buffer);
 
@@ -68,14 +62,28 @@
 
       if (response.error) {
         console.error('Error uploading image:', response.error);
+        return null;
       } else {
-        image = {
+        return {
           _type: 'image',
-          asset: { _type:'reference', _ref: response._id },
+          asset: { _type: 'reference', _ref: response._id },
         };
       }
     } catch (error) {
       console.error('Error uploading image:', error);
+      return null;
+    }
+  }
+
+  async function handleSubmit() {
+    if (!validate()) {
+      return;
+    }
+
+    const file = files[0];
+    let image = null;
+    if (file) {
+      image = await uploadFile(file);
     }
 
     const data = {
@@ -97,12 +105,14 @@
       data.image = image;
     }
 
-    const res = await post(data);
+    const response = await post(data);
+
     if (res.error) {
       console.error('Error creating book:', res.error);
-    } else {
-      alert('Livro adicionado com sucesso!');
+      return
     }
+
+    alert('Livro adicionado com sucesso!');
   }
 
   function handlePreview(event) {
@@ -125,7 +135,7 @@
         on:change={handlePreview} 
         bind:files 
       />
-      <img id="image" class="h-[200px] mt-4" src="https://placehold.co/200?text=sem capa" />
+      <img id="image" class="h-[200px] mt-4" src={APP.NO_IMAGE} />
     </label>
 
     <div class="mb-4">

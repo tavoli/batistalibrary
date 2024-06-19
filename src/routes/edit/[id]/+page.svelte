@@ -1,52 +1,207 @@
 <script>
-  let isbn = '';
-  let title = '';
-  let author = '';
-  let date = '';
-  let category = '';
-  let description = '';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { APP } from '$lib/constants';
+  import { menu, library, getBook } from '$lib/store'
+  import { update, fetchBook } from '$lib/api'
+  import { NewSet } from'$lib/store';
+  import { get } from 'svelte/store';
 
-  const post = () => {
-    console.log({ isbn, title, author, date, category, description });
+  let book = getBook($page.params.id) ?? {
+    isbn: '',
+    title: '',
+    author: { _id: '' },
+    date_published: '',
+    description: '',
+    available: true,
+    categories: []
   };
+
+  export let data
+
+  const errors = NewSet();
+
+  function validate() {
+    errors.clear();
+
+    [
+      ['isbn', book.isbn], 
+      ['title', book.title], 
+      ['author', book.author._id], 
+      ['date_published', book.date_published], 
+      ['description', book.description],
+      ['available', book.available],
+      ['categories', book.categories.length],
+    ].forEach(([key, isValid]) => {
+      if (!isValid) {
+        errors.add(key);
+      }
+    });
+
+    return errors.size() === 0;
+  }
+
+  async function handleSubmit() {
+    if (!validate()) {
+      return;
+    }
+
+    const response = await update($page.params.id, {
+      isbn: book.isbn,
+      title: book.title,
+      author: { _type: 'author', _ref: book.author._id },
+      date_published: book.date_published,
+      categories: book.categories.map(_ref => ({
+        _type: 'reference',
+        _ref,
+        _key: Math.random(),
+      })),
+      description: book.description,
+      available: book.available,
+    })
+
+    if (response.error) {
+      console.error(response.error);
+      return;
+    }
+
+    alert('Livro atualizado com sucesso!');
+  }
+
+  onMount(async () => {
+    book = await fetchBook($page.params.id);
+  });
 </script>
 
 <div class="mt-10 p-4">
   <h1 class="text-xl mb-4">EDITAR LIVRO</h1>
 
-  <div class="mb-4 mt-16">
-    <label class="block mb-1 text-red-700" for="isbn">ISBN</label>
-    <input id="isbn" type="text" class="w-full p-2 border border-red-700" bind:value={isbn} />
-  </div>
-
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div>
-      <label class="block mb-1 text-red-700" for="title">Title</label>
-      <input id="title" type="text" class="w-full p-2 border border-red-700" bind:value={title} />
+  <form on:submit|preventDefault={handleSubmit}>
+    <div class="mb-4 mt-16">
+      <img id="image" class="h-[200px]" src={book.imageUrl ?? APP.NO_IMAGE} />
     </div>
-    <div>
-      <label class="block mb-1 text-red-700" for="author">Author</label>
-      <input id="author" type="text" class="w-full p-2 border border-red-700" bind:value={author} />
-    </div>
-  </div>
 
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div>
-      <label class="block mb-1 text-red-700" for="date">Date</label>
-      <input id="date" type="text" class="w-full p-2 border border-red-700" bind:value={date} />
+    <div class="mb-4">
+      <label class="block mb-1 text-red-700" for="isbn">ISBN</label>
+      <input 
+        id="isbn" 
+        type="text" 
+        class="w-full p-2 border border-red-700"
+        class:border-red-500={$errors.has('isbn')}
+        bind:value={book.isbn} 
+      />
+      {#if $errors.has('isbn')}
+        <div class="text-red-500 text-xs">
+          Código ISBN requerido
+        </div>
+      {/if}
     </div>
-    <div>
-      <label class="block mb-1 text-red-700" for="category">Category</label>
-      <input id="category" type="text" class="w-full p-2 border border-red-700" bind:value={category} />
+
+    <div class="grid grid-cols-1 gap-4 mb-4">
+      <div>
+        <label class="block mb-1 text-red-700" for="title">Título</label>
+        <input 
+          id="title" 
+          type="text" 
+          class="w-full p-2 border border-red-700"
+          class:border-red-500={$errors.has('title')}
+          bind:value={book.title} 
+        />
+        {#if $errors.has('title')}
+          <div class="text-red-500 text-xs">
+            Título do livro requerido
+          </div>
+        {/if}
+      </div>
     </div>
-  </div>
 
-  <div class="mb-4">
-    <label class="block mb-1 text-red-700" for="description">Descrição</label>
-    <textarea id="description" rows="5" class="w-full p-2 border border-red-700" bind:value={description}></textarea>
-  </div>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="block mb-1 text-red-700" for="author">Autor</label>
+        <select 
+          id="author" 
+          class="w-full p-2 border border-red-700" 
+          class:border-red-500={$errors.has('author')}
+          bind:value={book.author._id}>
+          <option value="">Selecione</option>
+          {#each data.deps.authors as author}
+            <option value={author._id}>{author.name}</option>
+          {/each}
+        </select>
+        {#if $errors.has('author')}
+          <div class="text-red-500 text-xs">
+            Selecione um autor
+          </div>
+        {/if}
+      </div>
+      <div>
+        <label class="block mb-1 text-red-700" for="date_published">Data de publicação</label>
+        <input 
+          id="date_published" 
+          type="datetime-local" 
+          class="w-full p-2 border border-red-700" 
+          class:border-red-500={$errors.has('date_published')}
+          bind:value={book.date_published}
+        />
+        {#if $errors.has('date_published')}
+          <div class="text-red-500 text-xs">
+            Data de publicação requerida
+          </div>
+        {/if}
+      </div>
+    </div>
 
-  <button class="btn btn-primary mt-16" on:click={post}>
-    SALVAR
-  </button>
+    <div class="grid grid-cols-1 gap-4 mb-4">
+      <div>
+        <label class="block mb-1 text-red-700" for="category">Categorias</label>
+        <div class="flex gap-2">
+          {#each data.deps.categories as category}
+            <div>
+              <input 
+                class="accent-red-700" 
+                id={category._id} 
+                type="checkbox" 
+                bind:group={book.categories} 
+                value={category._id} 
+              />
+              <label for={category._id}>{category.name}</label> 
+            </div>
+          {/each}
+        </div>
+        {#if $errors.has('category')}
+          <div class="text-red-500 text-xs">
+            Selecione ao menos uma categoria
+          </div>
+        {/if}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label class="block mb-1 text-red-700" for="description">Descrição</label>
+      <textarea 
+        id="description" 
+        rows="5" 
+        class="w-full p-2 border border-red-700" 
+        class:border-red-500={$errors.has('description')}
+        bind:value={book.description}
+      />
+      {#if $errors.has('description')}
+        <div class="text-red-500 text-xs">
+          Descrição do livro requerida
+        </div>
+      {/if}
+    </div>
+
+    <div class="mb-4">
+      <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
+      <div>
+        <input type="checkbox" id="available" bind:checked={book.available} />
+        <label for="available">Sim</label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-16">
+      SALVAR
+    </button>
+  </form>
 </div>
