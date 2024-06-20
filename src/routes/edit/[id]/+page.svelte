@@ -2,14 +2,15 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { APP } from '$lib/constants';
-  import { menu, library, getBook } from '$lib/store'
-  import { update, fetchBook } from '$lib/api'
+  import { menu, library, getBook  } from '$lib/store'
+  import { update, getBookToUpdate } from '$lib/api'
   import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
   let book = getBook($page.params.id) ?? {
     isbn: '',
     title: '',
+    pages: '',
     author: { _id: '' },
     date_published: '',
     description: '',
@@ -27,6 +28,7 @@
     [
       ['isbn', book.isbn], 
       ['title', book.title], 
+      ['pages', Number(book.pages) >= 0], 
       ['author', book.author._id], 
       ['date_published', book.date_published], 
       ['description', book.description],
@@ -49,6 +51,7 @@
     const response = await update($page.params.id, {
       isbn: book.isbn,
       title: book.title,
+      pages: book.pages,
       author: { _type: 'author', _ref: book.author._id },
       date_published: book.date_published,
       categories: book.categories.map(_ref => ({
@@ -69,7 +72,7 @@
   }
 
   onMount(async () => {
-    book = await fetchBook($page.params.id);
+    book = await getBookToUpdate($page.params.id);
   });
 </script>
 
@@ -157,13 +160,22 @@
         <div class="flex gap-2">
           {#each data.deps.categories as category}
             <div>
-              <input 
-                class="accent-red-700" 
-                id={category._id} 
-                type="checkbox" 
-                bind:group={book.categories} 
-                value={category._id} 
-              />
+              {#if book?.categories?.length > 0}
+                <input 
+                  class="accent-red-700" 
+                  id={category._id} 
+                  type="checkbox" 
+                  bind:group={book.categories} 
+                  value={category._id} 
+                />
+              {:else}
+                <input 
+                  class="accent-red-700" 
+                  id={category._id} 
+                  type="checkbox" 
+                  bind:group={book.categories} 
+                />
+              {/if}
               <label for={category._id}>{category.name}</label> 
             </div>
           {/each}
@@ -192,11 +204,28 @@
       {/if}
     </div>
 
-    <div class="mb-4">
-      <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
+    <div class="grid grid-cols-2 gap-4 mb-4">
       <div>
-        <input type="checkbox" id="available" bind:checked={book.available} />
-        <label for="available">Sim</label>
+        <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
+        <div>
+          <input type="checkbox" id="available" bind:checked={book.available} />
+          <label for="available">Sim</label>
+        </div>
+      </div>
+      <div>
+        <label class="block mb-1 text-red-700" for="isbn">Número de Páginas</label>
+        <input 
+          id="pages" 
+          type="text" 
+          class="w-full p-2 border border-red-700"
+          class:border-red-500={$errors.has('pages')}
+          bind:value={book.pages} 
+        />
+        {#if $errors.has('pages')}
+          <div class="text-red-500 text-xs">
+            Número de páginas requerido
+          </div>
+        {/if}
       </div>
     </div>
 

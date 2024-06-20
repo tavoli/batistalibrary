@@ -7,6 +7,7 @@
   let files = '';
   let isbn = '';
   let title = '';
+  let pages = '';
   let author = '';
   let date = '';
   let description = '';
@@ -23,6 +24,7 @@
     [
       ['isbn', isbn], 
       ['title', title], 
+      ['pages', pages], 
       ['author', author], 
       ['date', date], 
       ['description', description]
@@ -89,6 +91,7 @@
     const data = {
       isbn,
       title,
+      pages,
       author: { _type: 'author', _ref: author },
       date_published: new Date(date).toISOString(),
       categories: categories.map(_ref => ({
@@ -249,11 +252,28 @@
       {/if}
     </div>
 
-    <div class="mb-4">
-      <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
+    <div class="grid grid-cols-2 gap-4 mb-4">
       <div>
-        <input type="checkbox" id="available" bind:checked={available} />
-        <label for="available">Sim</label>
+        <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
+        <div>
+          <input type="checkbox" id="available" bind:checked={available} />
+          <label for="available">Sim</label>
+        </div>
+      </div>
+      <div>
+        <label class="block mb-1 text-red-700" for="isbn">Número de Páginas</label>
+        <input 
+          id="pages" 
+          type="text" 
+          class="w-full p-2 border border-red-700"
+          class:border-red-500={$errors.has('pages')}
+          bind:value={pages} 
+        />
+        {#if $errors.has('pages')}
+          <div class="text-red-500 text-xs">
+            Número de páginas requerido
+          </div>
+        {/if}
       </div>
     </div>
 

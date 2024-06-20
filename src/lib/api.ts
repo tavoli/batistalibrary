@@ -32,12 +32,43 @@ export async function getLibrary(category = ''): Promise<Book[]> {
   return result;
 }
 
-export async function fetchBook(id: string) {
+export async function getBookById(id: string) {
   const response = await client.fetch(`
     *[_type == "books" && _id == "${id}"] { 
       _id,
       isbn,
       title,
+      pages,
+      author-> {
+        _id,
+        name
+      },
+      date_published,
+      description,
+      available,
+      "categories": categories[]->{_id, name},
+      "imageUrl": image.asset->url,
+    }`)
+
+    if (response.error) {
+      console.error(response.error);
+      return null;
+    }
+
+    if (response.length === 0) {
+      return null;
+    }
+
+    return response[0];
+}
+
+export async function getBookToUpdate(id: string) {
+  const response = await client.fetch(`
+    *[_type == "books" && _id == "${id}"] { 
+      _id,
+      isbn,
+      title,
+      pages,
       author-> {
         _id,
         name
