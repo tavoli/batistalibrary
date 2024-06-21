@@ -24,7 +24,7 @@
   <img class="w-4/12" src={imageUrl} alt={title} on:click={onTouch} />
   <div class="flex flex-1 flex-col gap-1" on:click={onTouch}>
     <h3 class="text-lg">{title}</h3>
-    <p class="text-lg">{author.name}</p>
+    <p class="text-lg">{author?.name}</p>
   </div>
   <div class="w-8 h-8" on:click={onOptions}>
     <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">

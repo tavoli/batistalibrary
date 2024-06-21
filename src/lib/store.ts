@@ -38,6 +38,17 @@ export const library = writable<Library>({
   ids: [],
 });
 
+type QueryFilter = {
+  query: string;
+  ids: string[];
+}
+
+export const queryFilter = writable<QueryFilter>({ query: '', ids: [] });
+
+export const queryNotFound = derived(queryFilter, ($f) => $f.ids.length === 0 && $f.query.length > 0)
+
+export const isFiltering = derived(queryFilter, ($f) => $f.query.length > 0 || $f.ids.length > 0)
+
 export function borrowBook(id: string) {
   library.update(cur => {
     if (cur.available[id]) {
