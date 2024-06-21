@@ -18,7 +18,7 @@
     const title = titleObj.title.toLowerCase();
     const id = titleObj.id;
     for (let i = 0; i < title.length; i++) {
-      for (let j = i + 2; j <= title.length; j++) {
+      for (let j = i + 1; j <= title.length; j++) {
         const substring = title.substring(i, j);
         if (!indexMap[substring]) {
           indexMap[substring] = [];
