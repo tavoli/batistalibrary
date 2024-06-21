@@ -49,6 +49,54 @@ export const queryNotFound = derived(queryFilter, ($f) => $f.ids.length === 0 &&
 
 export const isFiltering = derived(queryFilter, ($f) => $f.query.length > 0 || $f.ids.length > 0)
 
+const getImage = (book: Book) => {
+  const defaultImage = 'https://placehold.co/200?text=sem foto';
+  return book?.imageUrl ? `${book.imageUrl}?w=200&h=200&fit=min&fm=webp` : defaultImage;
+};
+
+function filterBookList(
+  bookIds: string[], 
+  conditionFn: (id: string) => boolean, 
+  optionsFn: (id: string) => string[]
+) {
+  return bookIds
+    .filter(conditionFn)
+    .map(id => ({
+      id,
+      imageUrl: getImage(getBook(id)),
+      title: getBook(id, 'title'),
+      author: getBook(id, 'author'),
+      options: optionsFn(id)
+    }));
+}
+
+export const availableBooks = derived(library, $library => {
+  return filterBookList(
+    $library.ids, 
+    isAvailableBook, 
+    () => [APP.OPTION_BORROW, APP.OPTION_EDIT]
+  );
+});
+
+export const borrowedBooks = derived(library, $library => {
+  return filterBookList(
+    $library.ids, 
+    isBorrowedBook, 
+    () => [APP.OPTION_RETURN, APP.OPTION_EDIT]
+  );
+});
+
+export const filteredBooks = derived(
+  [queryFilter, isFiltering],
+  ([$queryFilter, $isFiltering]) => {
+    if ($isFiltering) {
+      return filterBookList($queryFilter.ids, () => true, getOptions);
+    } else {
+      return [];
+    }
+  }
+);
+
 export function borrowBook(id: string) {
   library.update(cur => {
     if (cur.available[id]) {
@@ -69,6 +117,12 @@ export function returnBook(id: string) {
     }
     return cur;
   });
+}
+
+function getOptions(id: string) {
+  return isAvailableBook(id) 
+    ? [APP.OPTION_BORROW, APP.OPTION_EDIT] 
+    : [APP.OPTION_RETURN, APP.OPTION_EDIT];
 }
 
 function getValueAtPath(obj: any, path: string): any {
