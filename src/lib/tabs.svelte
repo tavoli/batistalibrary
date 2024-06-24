@@ -3,7 +3,7 @@
 
   import ScrollContent from '$lib/scroll-content.svelte';
 
-  export let tabs;
+  export let tabs = ['Todos', 'Livros emprestados'];
   export let active;
 
   const dispatch = createEventDispatcher();

@@ -26,6 +26,16 @@ type Library = {
   ids: string[];
 }
 
+type Category = {
+  _id: string;
+  name: string;
+}
+
+type Author = {
+  _id: string;
+  name: string;
+}
+
 export const menu = writable<Menu>({ 
   type: APP.MENU,
   options: [],
@@ -37,6 +47,10 @@ export const library = writable<Library>({
   borrowed: {},
   ids: [],
 });
+
+export const categories = writable<Category[]>([]);
+export const authors = writable<Author[]>([]);
+export const applicationDataLoaded = writable<boolean>(false);
 
 type QueryFilter = {
   query: string;

@@ -19,8 +19,7 @@
     filteredBooks
   } from '$lib/store';
 
-  const [tab1, tab2] = ['Todos', 'Livros emprestados'];
-  let tabActive = tab1;
+  let tabActive = 'Todos';
 
   const handleSelect = (id: string) => {
     tabActive = id;
@@ -28,8 +27,8 @@
 </script>
 
 <main>
-  <Tabs tabs={[tab1, tab2]} active={tabActive} on:select={e => handleSelect(e.detail)}>
-    {#if tabActive === tab1}
+  <Tabs active={tabActive} on:select={e => handleSelect(e.detail)}>
+    {#if tabActive === 'Todos'}
       <TabContent
         books={$availableBooks}
         filteredBooks={$filteredBooks}

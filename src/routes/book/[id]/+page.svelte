@@ -7,11 +7,7 @@
   import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
-  let book = getBook($page.params.id);
-
-  onMount(async () => {
-    book = await getBookById($page.params.id);
-  });
+  const book = getBook($page.params.id);
 
   function handleBack() {
     window.history.back();

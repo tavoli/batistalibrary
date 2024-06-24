@@ -1,24 +1,16 @@
 <script>
-  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { APP } from '$lib/constants';
-  import { menu, library, getBook  } from '$lib/store'
+  import { menu, library, getBook, categories, authors } from '$lib/store'
   import { update, getBookToUpdate } from '$lib/api'
   import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
-  let book = getBook($page.params.id) ?? {
-    isbn: '',
-    title: '',
-    pages: '',
-    author: { _id: '' },
-    date_published: '',
-    description: '',
-    available: true,
-    categories: []
-  };
-
-  export let data
+  const _book = getBook($page.params.id);
+  const book = {
+    ..._book,
+    categories: _book.categories.map(c => c._id)
+  }
 
   const errors = NewSet();
 
@@ -70,10 +62,6 @@
 
     alert('Livro atualizado com sucesso!');
   }
-
-  onMount(async () => {
-    book = await getBookToUpdate($page.params.id);
-  });
 </script>
 
 <div class="mt-10 p-4">
@@ -127,7 +115,7 @@
           class:border-red-500={$errors.has('author')}
           bind:value={book.author._id}>
           <option value="">Selecione</option>
-          {#each data.deps.authors as author}
+          {#each $authors as author}
             <option value={author._id}>{author.name}</option>
           {/each}
         </select>
@@ -158,7 +146,7 @@
       <div>
         <label class="block mb-1 text-red-700" for="category">Categorias</label>
         <div class="flex gap-2">
-          {#each data.deps.categories as category}
+          {#each $categories as category}
             <div>
               {#if book?.categories?.length > 0}
                 <input 

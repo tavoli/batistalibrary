@@ -15,13 +15,15 @@ export async function getPostOrEditDeps() {
 export async function getLibrary(category = ''): Promise<Book[]> {
   const attrs = `
     _id,
+    isbn,
     title,
+    pages,
+    author-> { _id, name },
+    date_published,
+    description,
     available,
-    "imageUrl": image.asset->url,
-    author-> {
-      _id,
-      name
-    }
+    "categories": categories[]->{ _id, name },
+    "imageUrl": image.asset->url
   `;
 
   const query = category && category != 'Todos'

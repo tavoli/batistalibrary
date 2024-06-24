@@ -1,7 +1,7 @@
 <script>
   import { post } from '$lib/api'
   import { APP } from '$lib/constants';
-  import { NewSet } from'$lib/store';
+  import { NewSet, categories as categoriesStore, authors as authorsStore } from'$lib/store';
   import { get } from 'svelte/store';
 
   let files = '';
@@ -13,8 +13,6 @@
   let description = '';
   let available = true;
   let categories = [];
-
-  export let data
 
   const errors = NewSet();
 
@@ -184,7 +182,7 @@
           class:border-red-500={$errors.has('author')}
           bind:value={author}>
           <option value="">Selecione</option>
-          {#each data.deps.authors as author}
+          {#each $authorsStore as author}
             <option value={author._id}>{author.name}</option>
           {/each}
         </select>
@@ -215,7 +213,7 @@
       <div>
         <label class="block mb-1 text-red-700" for="category">Categorias</label>
         <div class="flex gap-2">
-          {#each data.deps.categories as category}
+          {#each $categoriesStore as category}
             <div>
               <input 
                 class="accent-red-700" 
@@ -227,6 +225,10 @@
               <label for={category._id}>{category.name}</label> 
             </div>
           {/each}
+
+          {#if $categoriesStore.length <= 0}
+            <span class="text-red-700 text-sm">--</span>
+          {/if}
         </div>
         {#if $errors.has('category')}
           <div class="text-red-500 text-xs">
