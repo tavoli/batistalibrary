@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { APP } from '$lib/constants'
-  import { close, menu, library, returnBook } from '$lib/store'
+  import { close, menu, library, returnBook, toast } from '$lib/store'
   import { update } from '$lib/api'
 
   const dispatch = createEventDispatcher();
@@ -19,13 +19,14 @@
       await update($menu.id, { available: true })
     } catch (error) {
       console.error(error)
+      toast('Ocorreu um erro ao devolver o livro.')
       return;
     }
 
     returnBook($menu.id)
     close(APP.POPUP)
     dispatch('returned');
-    alert('Livro devolvido!')
+    toast('Livro devolvido!')
   }
 
   function handleCancel() {

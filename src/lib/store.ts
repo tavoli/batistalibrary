@@ -9,15 +9,21 @@ type Menu = {
 
 export type Book = {
   _id: string;
+  isbn: string;
   title: string;
-  available: boolean;
-  imageUrl: string;
+  pages: number;
   author: {
+    _id: string;
     name: string;
   };
-  category: {
+  date_published: string;
+  description: string;
+  available: boolean;
+  categories: {
+    _id: string;
     name: string;
-  };
+  }[];
+  imageUrl: string;
 }
 
 type Library = {
@@ -36,6 +42,16 @@ type Author = {
   name: string;
 }
 
+type CategoryStore = {
+  ids: string[];
+  category: Record<string, Category>;
+}
+
+type AuthorStore = {
+  ids: string[];
+  author: Record<string, Author>;
+}
+
 export const menu = writable<Menu>({ 
   type: APP.MENU,
   options: [],
@@ -48,9 +64,24 @@ export const library = writable<Library>({
   ids: [],
 });
 
-export const categories = writable<Category[]>([]);
-export const authors = writable<Author[]>([]);
+export const categoryStore = writable<CategoryStore>({
+  ids: [],
+  category: {},
+});
+
+export const authorStore = writable<AuthorStore>({
+  ids: [],
+  author: {},
+});
+
 export const applicationDataLoaded = writable<boolean>(false);
+
+export const notification = writable<string>('');
+
+export const toast = (message: string) => {
+  notification.set(message);
+  setTimeout(() => notification.set(''), 3000);
+}
 
 type QueryFilter = {
   query: string;
@@ -132,6 +163,32 @@ export function returnBook(id: string) {
       cur.available[id] = cur.borrowed[id];
       cur.available[id].available = true;
       delete cur.borrowed[id];
+    }
+    return cur;
+  });
+}
+
+export function updateBookStore(book: Book) {
+  library.update(cur => {
+    if (book.available) {
+      delete cur.borrowed[book._id];
+      cur.available[book._id] = book;
+      return cur;
+    } else {
+      delete cur.available[book._id];
+      cur.borrowed[book._id] = book;
+      return cur;
+    }
+  });
+}
+
+export function addBookStore(book: Book) {
+  library.update(cur => {
+    cur.ids.push(book._id);
+    if (book.available) {
+      cur.available[book._id] = book;
+    } else {
+      cur.borrowed[book._id] = book;
     }
     return cur;
   });
@@ -241,7 +298,7 @@ function createSetStore<T>(initialValue: T[] = []) {
 
 export const NewSet = createSetStore;
 
-async function categorizeBooks(books: Book[]): Promise<{ available: Record<string, Book>, borrowed: Record<string, Book>, ids: string[] }> {
+function categorizeBooks(books: Book[]) {
   const available: Record<string, Book> = {}
   const borrowed: Record<string, Book> = {}
   const ids: string[] = []
@@ -258,12 +315,42 @@ async function categorizeBooks(books: Book[]): Promise<{ available: Record<strin
   return { available, borrowed, ids }
 }
 
-export async function updateLibrary(books: Book[] = []): Promise<void> {
-  const { available, borrowed, ids } = await categorizeBooks(books)
+export function updateLibraryStore(books: Book[] = []) {
+  const { available, borrowed, ids } = categorizeBooks(books)
 
   library.set({ 
     available, 
     borrowed,
+    ids
+  })
+}
+
+export function updateCategoryStore(categories: Category[] = []) {
+  const category: Record<string, Category> = {}
+  const ids: string[] = []
+
+  for (const c of categories) {
+    ids.push(c._id)
+    category[c._id] = c
+  }
+
+  categoryStore.set({
+    category,
+    ids
+  })
+}
+
+export function updateAuthorStore(authors: Author[] = []) {
+  const author: Record<string, Author> = {}
+  const ids: string[] = []
+
+  for (const a of authors) {
+    ids.push(a._id)
+    author[a._id] = a
+  }
+
+  authorStore.set({
+    author,
     ids
   })
 }

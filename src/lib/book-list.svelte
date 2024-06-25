@@ -1,7 +1,7 @@
 <script>
   import Book from './book.svelte';
   import { goto } from '$app/navigation';
-  import { open } from '$lib/store';
+  import { open, authorStore } from '$lib/store';
   import { APP } from '$lib/constants';
 
   export let books = [];
@@ -24,7 +24,7 @@
     <Book 
       imageUrl={book.imageUrl} 
       title={book.title} 
-      author={book.author} 
+      authorName={$authorStore.author[book.author._id].name} 
       on:touch={() => handleTouch(book.id)}
       on:option={() => handleOption(book.id, book.options)}
     />

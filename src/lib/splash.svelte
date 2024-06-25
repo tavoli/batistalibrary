@@ -1,21 +1,26 @@
 <script lang="ts">
   import {onMount} from "svelte"
+  import { get } from "svelte/store"
 
   import { goto } from "$app/navigation"
   import { getLibrary, getPostOrEditDeps } from "$lib/api";
-  import { library, categories, authors, applicationDataLoaded, updateLibrary, type Book } from "$lib/store"
+  import { applicationDataLoaded, updateLibraryStore, updateCategoryStore, updateAuthorStore, type Book } from "$lib/store"
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   onMount(async () => {
+    if (get(applicationDataLoaded)) {
+      return
+    }
+
     const books = await getLibrary()
     const deps = await getPostOrEditDeps()
     
-    await updateLibrary(books)
-    categories.set(deps.categories)
-    authors.set(deps.authors)
+    updateLibraryStore(books)
+    updateCategoryStore(deps.categories)
+    updateAuthorStore(deps.authors)
 
     await sleep(500)
 

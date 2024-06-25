@@ -1,7 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import { APP } from '$lib/constants';
-  import { menu, library, getBook, categories, authors } from '$lib/store'
+  import { menu, library, getBook, categoryStore, authorStore, toast, updateBookStore } from '$lib/store'
   import { update, getBookToUpdate } from '$lib/api'
   import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
@@ -20,11 +20,11 @@
     [
       ['isbn', book.isbn], 
       ['title', book.title], 
-      ['pages', Number(book.pages) >= 0], 
+      ['pages', parseInt(book.pages) > 0], 
       ['author', book.author._id], 
       ['date_published', book.date_published], 
       ['description', book.description],
-      ['available', book.available],
+      ['available', typeof book.available === 'boolean'],
       ['categories', book.categories.length],
     ].forEach(([key, isValid]) => {
       if (!isValid) {
@@ -40,10 +40,12 @@
       return;
     }
 
-    const response = await update($page.params.id, {
+    updateBookStore(book);
+
+    update($page.params.id, {
       isbn: book.isbn,
       title: book.title,
-      pages: book.pages,
+      pages: parseInt(book.pages),
       author: { _type: 'author', _ref: book.author._id },
       date_published: book.date_published,
       categories: book.categories.map(_ref => ({
@@ -54,13 +56,15 @@
       description: book.description,
       available: book.available,
     })
+    .then(() => {
+      toast('Livro atualizado com sucesso.');
+    })
+    .catch(error => {
+      console.error(error);
+      toast('Erro ao atualizar o livro.');
+    });
 
-    if (response.error) {
-      console.error(response.error);
-      return;
-    }
-
-    alert('Livro atualizado com sucesso!');
+    toast('Livro enviado para atualização...');
   }
 </script>
 
@@ -113,8 +117,10 @@
           class:border-red-500={$errors.has('author')}
           bind:value={book.author._id}>
           <option value="">Selecione</option>
-          {#each $authors as author}
-            <option value={author._id}>{author.name}</option>
+          {#each $authorStore.ids as id}
+            <option value={$authorStore.author[id]._id}>
+              {$authorStore.author[id].name}
+            </option>
           {/each}
         </select>
         {#if $errors.has('author')}
@@ -144,25 +150,27 @@
       <div>
         <label class="block mb-1 text-red-700" for="category">Categorias</label>
         <div class="flex gap-2">
-          {#each $categories as category}
+          {#each $categoryStore.ids as id}
             <div>
               {#if book?.categories?.length > 0}
                 <input 
                   class="accent-red-700" 
-                  id={category._id} 
+                  id={$categoryStore.category[id].name} 
                   type="checkbox" 
                   bind:group={book.categories} 
-                  value={category._id} 
+                  value={$categoryStore.category[id]._id} 
                 />
               {:else}
                 <input 
                   class="accent-red-700" 
-                  id={category._id} 
+                  id={$categoryStore.category[id].name} 
                   type="checkbox" 
                   bind:group={book.categories} 
                 />
               {/if}
-              <label for={category._id}>{category.name}</label> 
+              <label for={$categoryStore.category[id].name}>
+                {$categoryStore.category[id].name}
+              </label> 
             </div>
           {/each}
         </div>
@@ -194,8 +202,12 @@
       <div>
         <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
         <div>
-          <input type="checkbox" id="available" bind:checked={book.available} />
+          <input type="radio" id="available" bind:group={book.available} value={true} />
           <label for="available">Sim</label>
+        </div>
+        <div>
+          <input type="radio" id="unavailable" bind:group={book.available} value={false} />
+          <label for="unavailable" class="text-red-800">Não</label>
         </div>
       </div>
       <div>

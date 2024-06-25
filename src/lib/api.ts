@@ -1,6 +1,8 @@
 import client from "../client"
 import type { Book } from "./store";
 
+export const api = client;
+
 export async function getPostOrEditDeps() {
   const query = await client.fetch(`
     *[_type == "categories" || _type == "author"] { 
@@ -18,11 +20,11 @@ export async function getLibrary(category = ''): Promise<Book[]> {
     isbn,
     title,
     pages,
-    author-> { _id, name },
+    author-> { _id },
     date_published,
     description,
     available,
-    "categories": categories[]->{ _id, name },
+    "categories": categories[]->_id,
     "imageUrl": image.asset->url
   `;
 

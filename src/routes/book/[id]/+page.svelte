@@ -2,12 +2,13 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { APP } from '$lib/constants';
-  import { menu, library, getBook } from '$lib/store'
+  import { menu, library, getBook, categoryStore, authorStore } from '$lib/store'
   import { update, getBookById } from '$lib/api'
   import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
   const book = getBook($page.params.id);
+  console.log(book)
 
   function handleBack() {
     window.history.back();
@@ -33,7 +34,7 @@
     </div>
 
     <h2 class="text-center text-red-700 font-bold text-lg">{book?.title}</h2>
-    <p class="text-center text-gray-600">by {book?.author.name ?? '---'}</p>
+    <p class="text-center text-gray-600">by {$authorStore.author[book.author._id].name ?? '---'}</p>
 
     <div class="grid grid-cols-[1fr,1fr,1fr] my-8">
 
@@ -41,9 +42,9 @@
       <div class="text-center text-xs border-r border-r-red-700">
         <p class="text-gray-600">Categorias</p>
         <p class="text-red-700 font-bold flex flex-col">
-          {#if book?.categories}
-            {#each book.categories as category}
-              <span>{category.name}</span>
+          {#if book?.categories?.length > 0}
+            {#each book.categories as id}
+              <span>{$categoryStore.category[id].name}</span>
             {/each}
           {:else}
             ---

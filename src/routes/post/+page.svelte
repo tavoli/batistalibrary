@@ -1,18 +1,23 @@
 <script>
-  import { post } from '$lib/api'
+  import { post, api } from '$lib/api'
   import { APP } from '$lib/constants';
-  import { NewSet, categories as categoriesStore, authors as authorsStore } from'$lib/store';
+  import { NewSet, categoryStore, authorStore, addBookStore, updateBookStore, toast } from'$lib/store';
   import { get } from 'svelte/store';
 
-  let files = '';
-  let isbn = '';
-  let title = '';
-  let pages = '';
-  let author = '';
-  let date = '';
-  let description = '';
-  let available = true;
-  let categories = [];
+  let files = null;
+  const book = {
+    isbn: null,
+    title: null,
+    pages: null,
+    author: {
+      _id: null
+    },
+    date_published: null,
+    description: null,
+    available: true,
+    categories: [],
+    imageUrl: null
+  };
 
   const errors = NewSet();
 
@@ -20,12 +25,13 @@
     errors.clear();
 
     [
-      ['isbn', isbn], 
-      ['title', title], 
-      ['pages', pages], 
-      ['author', author], 
-      ['date', date], 
-      ['description', description]
+      ['isbn', book.isbn], 
+      ['title', book.title], 
+      ['pages', parseInt(book.pages) > 0], 
+      ['author', book.author._id], 
+      ['date_published', book.date_published], 
+      ['description', book.description],
+      ['available', typeof book.available === 'boolean'],
     ].forEach(([key, value]) => {
       if (!value) {
         errors.add(key);
@@ -56,7 +62,7 @@
       const buffer = await readFileAsArrayBuffer(file);
       const arrayBuffer = new Uint8Array(buffer);
 
-      const response = await client.assets.upload('image', arrayBuffer, {
+      const response = await api.assets.upload('image', arrayBuffer, {
         filename: file.name,
       });
 
@@ -65,9 +71,12 @@
         return null;
       } else {
         return {
-          _type: 'image',
-          asset: { _type: 'reference', _ref: response._id },
-        };
+          url: response.url,
+          image: {
+            _type: 'image',
+            asset: { _type: 'reference', _ref: response._id },
+          },
+        }
       }
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -80,40 +89,53 @@
       return;
     }
 
-    const file = files[0];
-    let image = null;
-    if (file) {
-      image = await uploadFile(file);
-    }
-
-    const data = {
-      isbn,
-      title,
-      pages,
-      author: { _type: 'author', _ref: author },
-      date_published: new Date(date).toISOString(),
-      categories: categories.map(_ref => ({
-        _type: 'reference',
+    const newBook = {
+      _type: 'books',
+      _id: book.isbn,
+      isbn: book.isbn,
+      title: book.title,
+      pages: parseInt(book.pages),
+      author: { _type: 'author', _ref: book.author._id },
+      date_published: new Date(book.date_published).toISOString(),
+      categories: book.categories.map(_ref => ({
+        _type:'reference',
         _ref,
         _key: Math.random(),
       })),
-      description,
-      image,
-      available,
-    };
-
-    if (image) {
-      data.image = image;
+      description: book.description,
+      available: book.available,
     }
 
-    const response = await post(data);
+    console.log(book)
 
-    if (res.error) {
-      console.error('Error creating book:', res.error);
-      return
+    book._id = book.isbn;
+
+    if (files?.length) {
+      uploadFile(files[0])
+        .then(res => {
+          newBook.image = res.image;
+          updateBookStore({ ...book, imageUrl: res.url });
+          postBook(newBook);
+        })
+        .catch(err => {
+          console.error('Error uploading image:', err);
+          postBook(newBook);
+        });
+    } else {
+      postBook(newBook);
     }
 
-    alert('Livro adicionado com sucesso!');
+    toast('Salvando o novo livro...');
+    addBookStore(book);
+  }
+
+  function postBook(newBook) {
+    post(newBook)
+      .then(() => toast('Novo livro adicionado com sucesso.'))
+      .catch(err => {
+        console.error('Error creating book:', err);
+        toast('Ocorreu um erro ao tentar salvar o livro.');
+      })
   }
 
   function handlePreview(event) {
@@ -144,7 +166,7 @@
         type="text" 
         class="w-full p-2 border border-red-700"
         class:border-red-500={$errors.has('isbn')}
-        bind:value={isbn} 
+        bind:value={book.isbn} 
       />
       {#if $errors.has('isbn')}
         <div class="text-red-500 text-xs">
@@ -161,7 +183,7 @@
           type="text" 
           class="w-full p-2 border border-red-700"
           class:border-red-500={$errors.has('title')}
-          bind:value={title} 
+          bind:value={book.title} 
         />
         {#if $errors.has('title')}
           <div class="text-red-500 text-xs">
@@ -178,10 +200,10 @@
           id="author" 
           class="w-full p-2 border border-red-700" 
           class:border-red-500={$errors.has('author')}
-          bind:value={author}>
+          bind:value={book.author._id}>
           <option value="">Selecione</option>
-          {#each $authorsStore as author}
-            <option value={author._id}>{author.name}</option>
+          {#each $authorStore.ids as id}
+            <option value={$authorStore.author[id]._id}>{$authorStore.author[id].name}</option>
           {/each}
         </select>
         {#if $errors.has('author')}
@@ -197,7 +219,7 @@
           type="date" 
           class="w-full p-2 border border-red-700" 
           class:border-red-500={$errors.has('date')}
-          bind:value={date}
+          bind:value={book.date_published}
         />
         {#if $errors.has('date')}
           <div class="text-red-500 text-xs">
@@ -211,20 +233,22 @@
       <div>
         <label class="block mb-1 text-red-700" for="category">Categorias</label>
         <div class="flex gap-2">
-          {#each $categoriesStore as category}
+          {#each $categoryStore.ids as id}
             <div>
               <input 
                 class="accent-red-700" 
-                id={category._id} 
+                id={$categoryStore.category[id].name} 
                 type="checkbox" 
-                bind:group={categories} 
-                value={category._id} 
+                bind:group={book.categories} 
+                value={$categoryStore.category[id]._id} 
               />
-              <label for={category._id}>{category.name}</label> 
+              <label for={$categoryStore.category[id].name}>
+                {$categoryStore.category[id].name}
+              </label> 
             </div>
           {/each}
 
-          {#if $categoriesStore.length <= 0}
+          {#if $categoryStore.ids.length <= 0}
             <span class="text-red-700 text-sm">--</span>
           {/if}
         </div>
@@ -243,7 +267,7 @@
         rows="5" 
         class="w-full p-2 border border-red-700" 
         class:border-red-500={$errors.has('description')}
-        bind:value={description}
+        bind:value={book.description}
       />
       {#if $errors.has('description')}
         <div class="text-red-500 text-xs">
@@ -256,8 +280,12 @@
       <div>
         <label class="block mb-1 text-red-700" for="available">Livro disponível</label>
         <div>
-          <input type="checkbox" id="available" bind:checked={available} />
+          <input type="radio" id="available" bind:group={book.available} value={true} />
           <label for="available">Sim</label>
+        </div>
+        <div>
+          <input type="radio" id="unavailable" bind:group={book.available} value={false} />
+          <label for="unavailable" class="text-red-800">Não</label>
         </div>
       </div>
       <div>
@@ -267,7 +295,7 @@
           type="text" 
           class="w-full p-2 border border-red-700"
           class:border-red-500={$errors.has('pages')}
-          bind:value={pages} 
+          bind:value={book.pages} 
         />
         {#if $errors.has('pages')}
           <div class="text-red-500 text-xs">

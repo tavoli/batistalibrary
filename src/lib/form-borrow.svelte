@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import { post, update } from '$lib/api'
   import { APP } from '$lib/constants'
-  import { menu, library, close, borrowBook, NewSet } from '$lib/store'
+  import { menu, library, close, borrowBook, NewSet, toast } from '$lib/store'
 
   let user = '';
   let phoneNumber = '';
@@ -43,6 +43,7 @@
         available: false,
       })
     } catch (err) {
+      toast('Não foi possível emprestar o livro.');
       console.error(err);
       return;
     }
@@ -50,7 +51,7 @@
     borrowBook($menu.id);
     close(APP.POPUP);
     dispatch('borrowed');
-    alert('Emprestado com sucesso!');
+    toast('Emprestado com sucesso!');
   }
 
   function handleCancel() {
