@@ -59,6 +59,10 @@ type QueryFilter = {
 
 export const queryFilter = writable<QueryFilter>({ query: '', ids: [] });
 
+export const clearFilter = () => {
+  queryFilter.set({ query: '', ids: [] });
+}
+
 export const queryNotFound = derived(queryFilter, ($f) => $f.ids.length === 0 && $f.query.length > 0)
 
 export const isFiltering = derived(queryFilter, ($f) => $f.query.length > 0 || $f.ids.length > 0)
@@ -236,3 +240,30 @@ function createSetStore<T>(initialValue: T[] = []) {
 }
 
 export const NewSet = createSetStore;
+
+async function categorizeBooks(books: Book[]): Promise<{ available: Record<string, Book>, borrowed: Record<string, Book>, ids: string[] }> {
+  const available: Record<string, Book> = {}
+  const borrowed: Record<string, Book> = {}
+  const ids: string[] = []
+
+  for (const book of books) {
+    ids.push(book._id)
+    if (book.available) {
+      available[book._id] = book
+    } else {
+      borrowed[book._id] = book
+    }
+  }
+
+  return { available, borrowed, ids }
+}
+
+export async function updateLibrary(books: Book[] = []): Promise<void> {
+  const { available, borrowed, ids } = await categorizeBooks(books)
+
+  library.set({ 
+    available, 
+    borrowed,
+    ids
+  })
+}

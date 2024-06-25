@@ -3,7 +3,7 @@
 
   import { goto } from "$app/navigation"
   import { getLibrary, getPostOrEditDeps } from "$lib/api";
-  import { library, categories, authors, applicationDataLoaded, type Book } from "$lib/store"
+  import { library, categories, authors, applicationDataLoaded, updateLibrary, type Book } from "$lib/store"
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
@@ -13,25 +13,7 @@
     const books = await getLibrary()
     const deps = await getPostOrEditDeps()
     
-    const available: Record<string, Book> = {}
-    const borrowed: Record<string, Book> = {}
-    const ids: string[] = []
-
-    for (const book of books) {
-      ids.push(book._id)
-      if (book.available) {
-        available[book._id] = book
-      } else {
-        borrowed[book._id] = book
-      }
-    }
-
-    library.set({ 
-      available, 
-      borrowed,
-      ids
-    })
-
+    await updateLibrary(books)
     categories.set(deps.categories)
     authors.set(deps.authors)
 

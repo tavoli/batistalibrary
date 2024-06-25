@@ -1,8 +1,10 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
   import { APP } from '$lib/constants'
   import { close, menu, library, returnBook } from '$lib/store'
   import { update } from '$lib/api'
 
+  const dispatch = createEventDispatcher();
   const today = new Date()
 
   function formatHumanFriendlyDate(date) {
@@ -22,6 +24,7 @@
 
     returnBook($menu.id)
     close(APP.POPUP)
+    dispatch('returned');
     alert('Livro devolvido!')
   }
 

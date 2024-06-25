@@ -1,4 +1,5 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
   import { post, update } from '$lib/api'
   import { APP } from '$lib/constants'
   import { menu, library, close, borrowBook, NewSet } from '$lib/store'
@@ -7,6 +8,7 @@
   let phoneNumber = '';
   let returnDate = '';
 
+  const dispatch = createEventDispatcher();
   const errors = NewSet();
 
   function validate() {
@@ -46,8 +48,9 @@
     }
 
     borrowBook($menu.id);
-    alert('Emprestado com sucesso!');
     close(APP.POPUP);
+    dispatch('borrowed');
+    alert('Emprestado com sucesso!');
   }
 
   function handleCancel() {

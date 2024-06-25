@@ -64,11 +64,9 @@
   }
 </script>
 
-<div class="mt-10 p-4">
-  <h1 class="text-xl mb-4">EDITAR LIVRO</h1>
-
+<div class="p-4">
   <form on:submit|preventDefault={handleSubmit}>
-    <div class="mb-4 mt-16">
+    <div class="mb-4">
       <img id="image" class="h-[200px]" src={book.imageUrl ?? APP.NO_IMAGE} />
     </div>
 

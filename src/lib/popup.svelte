@@ -4,7 +4,7 @@
   import BorrowForm from '$lib/form-borrow.svelte'
   import FilterForm from '$lib/form-filter.svelte'
 
-  import { open, openedBorrow, openedReturn, openedFilter, openedPopup } from '$lib/store'
+  import { open, openedBorrow, openedReturn, openedFilter, openedPopup, clearFilter } from '$lib/store'
   import { APP } from '$lib/constants'
 </script>
 
@@ -14,11 +14,11 @@
   <hr class="w-2/12 h-1 bg-red-700 border-0 self-center" />
 
   {#if $openedBorrow}
-    <BorrowForm />
+    <BorrowForm on:borrowed={clearFilter} />
   {:else if $openedReturn}
-    <ReturnForm />
+    <ReturnForm on:returned={clearFilter} />
   {:else if $openedFilter}
-    <FilterForm />
+    <FilterForm on:filtered={clearFilter} />
   {:else}
     <Options />
   {/if}

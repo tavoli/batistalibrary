@@ -122,11 +122,9 @@
   }
 </script>
 
-<div class="mt-10 p-4">
-  <h1 class="text-xl mb-4">ADICIONAR LIVRO</h1>
-
+<div class="p-4">
   <form on:submit|preventDefault={handleSubmit}>
-    <label class="mb-4 mt-16 block cursor-pointer" for="imageFile">
+    <label class="mb-4 block cursor-pointer" for="imageFile">
       <div class="mb-1 text-red-700 bg-red-500 text-white inline-block p-2">Capa do livro</div>
       <input 
         class="hidden"

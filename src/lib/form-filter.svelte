@@ -1,14 +1,18 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
   import { onMount } from 'svelte'
   import { APP } from '$lib/constants'
-  import { close, library, categories } from '$lib/store'
+  import { close, library, categories, updateLibrary } from '$lib/store'
   import { getLibrary, getCategories } from '$lib/api'
 
+  const dispatch = createEventDispatcher();
   let selectedFilter = '';
 
   async function confirm() {
+    const books = await getLibrary(selectedFilter)
+    await updateLibrary(books)
+    dispatch('filtered');
     close(APP.POPUP)
-    library.set(await getLibrary(selectedFilter))
   }
 
   function cancel() {

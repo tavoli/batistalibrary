@@ -16,13 +16,15 @@
     getBook,
     availableBooks,
     borrowedBooks,
-    filteredBooks
+    filteredBooks,
+    clearFilter,
   } from '$lib/store';
 
   let tabActive = 'Todos';
 
   const handleSelect = (id: string) => {
     tabActive = id;
+    clearFilter();
   };
 </script>
 
