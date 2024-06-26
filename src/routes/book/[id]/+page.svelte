@@ -1,14 +1,13 @@
 <script>
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { APP } from '$lib/constants';
-  import { menu, library, getBook, categoryStore, authorStore } from '$lib/store'
-  import { update, getBookById } from '$lib/api'
-  import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
+  import { page } from '$app/stores';
+  import { APP } from '$lib/constants';
+  import { update, getBookById } from '$lib/api'
+  import { NewSet, menu, library, getBook, categoryStore, authorStore } from '$lib/stores'
+
   const book = getBook($page.params.id);
-  console.log(book)
 
   function handleBack() {
     window.history.back();

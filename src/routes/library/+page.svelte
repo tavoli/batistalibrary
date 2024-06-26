@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { derived } from 'svelte/store';
+
   import Tabs from '$lib/tabs.svelte';
+  import Bottom from '$lib/bottom.svelte'
+  import Menu from '$lib/menu.svelte'
   import Search from '$lib/search.svelte';
   import TabContent from '$lib/tab-content.svelte';
   import { APP } from '$lib/constants';
   import { goto } from '$app/navigation';
-  import { derived } from 'svelte/store';
   import {
     open,
     library,
@@ -18,7 +21,9 @@
     borrowedBooks,
     filteredBooks,
     clearFilter,
-  } from '$lib/store';
+    openedMenu,
+    openedPopup
+  } from '$lib/stores';
 
   let tabActive = 'Todos';
 
@@ -46,4 +51,11 @@
       />
     {/if}
   </Tabs>
+  <Bottom>
+    {#if $openedMenu}
+      <Menu />
+    {:else if $openedPopup}
+      <Popup />
+    {/if}
+  </Bottom>
 </main>

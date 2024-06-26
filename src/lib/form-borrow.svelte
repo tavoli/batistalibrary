@@ -1,8 +1,9 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+
   import { post, update } from '$lib/api'
   import { APP } from '$lib/constants'
-  import { menu, library, close, borrowBook, NewSet, toast } from '$lib/store'
+  import { menu, library, close, borrowBook, NewSet, toast } from '$lib/stores'
 
   let user = '';
   let phoneNumber = '';

@@ -4,7 +4,7 @@
 
   import { goto } from "$app/navigation"
   import { getLibrary, getPostOrEditDeps } from "$lib/api";
-  import { applicationDataLoaded, updateLibraryStore, updateCategoryStore, updateAuthorStore, type Book } from "$lib/store"
+  import { applicationDataLoaded, updateLibraryStore, updateCategoryStore, updateAuthorStore, type Book } from "$lib/stores"
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))

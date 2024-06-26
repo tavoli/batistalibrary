@@ -1,6 +1,6 @@
 <script>
   import { fade, fly } from "svelte/transition";
-  import { notification } from "$lib/store";
+  import { notification } from "$lib/stores";
 
   import "../app.css";
 </script>

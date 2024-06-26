@@ -1,5 +1,5 @@
 <script>
-  import { close, openedPopup } from '$lib/store.ts'
+  import { close, openedPopup } from '$lib/stores'
   import { APP } from '$lib/constants.ts'
 
   function handle() {

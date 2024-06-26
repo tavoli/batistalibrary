@@ -4,7 +4,7 @@
   import BorrowForm from '$lib/form-borrow.svelte'
   import FilterForm from '$lib/form-filter.svelte'
 
-  import { open, openedBorrow, openedReturn, openedFilter, openedPopup, clearFilter } from '$lib/store'
+  import { open, openedBorrow, openedReturn, openedFilter, openedPopup, clearFilter } from '$lib/stores'
   import { APP } from '$lib/constants'
 </script>
 

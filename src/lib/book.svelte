@@ -3,7 +3,7 @@
 
   import { goto } from '$app/navigation'
   import { APP } from '$lib/constants'
-  import { open } from '$lib/store'
+  import { open } from '$lib/stores'
 
   export let title
   export let authorName

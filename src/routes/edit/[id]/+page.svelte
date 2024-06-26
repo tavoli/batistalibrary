@@ -1,17 +1,12 @@
 <script>
-  import { page } from '$app/stores';
-  import { APP } from '$lib/constants';
-  import { menu, library, getBook, categoryStore, authorStore, toast, updateBookStore } from '$lib/store'
-  import { update, getBookToUpdate } from '$lib/api'
-  import { NewSet } from'$lib/store';
   import { get } from 'svelte/store';
 
-  const _book = getBook($page.params.id);
-  const book = {
-    ..._book,
-    categories: _book.categories.map(c => c._id)
-  }
+  import { NewSet, menu, library, getBook, categoryStore, authorStore, toast, updateBookStore } from '$lib/stores'
+  import { update, getBookToUpdate } from '$lib/api'
+  import { APP } from '$lib/constants';
+  import { page } from '$app/stores';
 
+  const book = getBook($page.params.id);
   const errors = NewSet();
 
   function validate() {

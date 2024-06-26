@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
-  import { open } from '$lib/store'
+  import { open } from '$lib/stores'
   import { APP } from '$lib/constants'
 
   import menu from './menu.json'

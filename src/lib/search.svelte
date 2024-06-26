@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { library, getBook, queryFilter } from '$lib/store'
+  import { library, getBook, queryFilter } from '$lib/stores'
 
   interface Title {
     title: string;

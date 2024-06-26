@@ -9,7 +9,7 @@ export const APP = {
   ROUTE_EDIT: '/edit/[id]',
   ROUTE_BOOK: '/book/[id]',
   ROUTE_POST: '/post',
-  ROUTE_LIST: '/library/list',
+  ROUTE_LIST: '/library',
 
   OPTION_BORROW: 'option.borrow',
   OPTION_RETURN: 'option.return',

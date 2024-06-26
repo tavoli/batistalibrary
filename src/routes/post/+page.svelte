@@ -1,8 +1,9 @@
 <script>
+  import { get } from 'svelte/store';
+
   import { post, api } from '$lib/api'
   import { APP } from '$lib/constants';
-  import { NewSet, categoryStore, authorStore, addBookStore, updateBookStore, toast } from'$lib/store';
-  import { get } from 'svelte/store';
+  import { NewSet, categoryStore, authorStore, addBookStore, updateBookStore, toast } from '$lib/stores';
 
   let files = null;
   const book = {

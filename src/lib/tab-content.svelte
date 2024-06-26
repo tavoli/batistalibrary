@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
   import Search from './search.svelte';
   import BookList from './book-list.svelte';
 

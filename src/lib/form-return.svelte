@@ -1,8 +1,9 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { APP } from '$lib/constants'
-  import { close, menu, library, returnBook, toast } from '$lib/store'
+
   import { update } from '$lib/api'
+  import { APP } from '$lib/constants'
+  import { close, menu, library, returnBook, toast } from '$lib/stores'
 
   const dispatch = createEventDispatcher();
   const today = new Date()

@@ -1,8 +1,8 @@
 <script>
-  import Book from './book.svelte';
   import { goto } from '$app/navigation';
-  import { open, authorStore } from '$lib/store';
+  import { open, authorStore } from '$lib/stores';
   import { APP } from '$lib/constants';
+  import Book from './book.svelte';
 
   export let books = [];
 
