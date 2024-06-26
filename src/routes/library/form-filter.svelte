@@ -2,17 +2,21 @@
   import { createEventDispatcher, onMount } from 'svelte';
 
   import { APP } from '$lib/constants'
-  import { close, library, categoryStore, updateLibraryStore } from '$lib/stores'
+  import { close, categoryStore, queryFilter, filterBooksByCategory } from '$lib/stores'
   import { getLibrary } from '$lib/api'
 
   const dispatch = createEventDispatcher();
-  let selectedFilter = '';
+
+  const options = []
+  for (const id of $categoryStore.ids) {
+    options.push($categoryStore.category[id].name)
+  }
+
+  let query = options.includes($queryFilter.query) ? $queryFilter.query : ''
 
   async function confirm() {
-    const books = await getLibrary(selectedFilter)
-    await updateLibraryStore(books)
-
-    dispatch('filtered');
+    const ids = filterBooksByCategory(query)
+    dispatch('filtered', { query, ids });
     close(APP.POPUP)
   }
 
@@ -26,14 +30,14 @@
 
   <div class="grid items-center">
     <label>
-      <input type="radio" name="filter" value={'Todos'} bind:group={selectedFilter} class="mr-2" />
-      Todos
+      <input type="radio" name="filter" value={''} bind:group={query} class="mr-2" />
+      <span>Todos</span>
     </label>
 
-    {#each $categoryStore.ids as id, index}
+    {#each options as option, index}
       <label>
-        <input type="radio" name="filter" value={$categoryStore.category[id].name} bind:group={selectedFilter} class="mr-2" />
-        {$categoryStore.category[id].name}
+        <input type="radio" name="filter" value={option} bind:group={query} class="mr-2" />
+        <span>{option}</span>
       </label>
     {/each}
   </div>

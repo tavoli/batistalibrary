@@ -11,15 +11,11 @@ export type Book = {
   pages: number;
   author: {
     _id: string;
-    name: string;
   };
   date_published: string;
   description: string;
   available: boolean;
-  categories: {
-    _id: string;
-    name: string;
-  }[];
+  categories: string[];
   imageUrl: string;
 }
 

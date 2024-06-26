@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation'
   import { close, open, menu } from '$lib/stores'
   import { APP } from '$lib/constants'
+
   import data from './options.json';
 
   const handle = (id) => {

@@ -4,6 +4,7 @@ import type { Library, Book } from '$lib/types';
 import { categorizeBooks, filterBookList, getOptions, getValueAtPath } from '$lib/helpers';
 import { queryFilter, isFiltering } from '$lib/stores/queryFilter';
 import { APP } from '$lib/constants';
+import { categoryStore } from '$lib/stores/category';
 
 export const library = writable<Library>({
   available: {},
@@ -11,7 +12,7 @@ export const library = writable<Library>({
   ids: [],
 });
 
-export function getBook(id: string, path = '') {
+export function getBook(id: string, path = ''): Book | null {
   const book = get(library).available[id] ?? get(library).borrowed[id];
   if (!book) return null;
   return path ? getValueAtPath(book, path) : book;
@@ -107,5 +108,19 @@ export function addBookStore(book: Book) {
       cur.borrowed[book._id] = book;
     }
     return cur;
+  });
+}
+
+export function filterBooksByCategory(name: string): string[] {
+  const ids = get(library).ids;
+  if (!name) return ids;
+
+  return ids.filter(id => {
+    const book = getBook(id);
+    if (!book) return false;
+
+    return book.categories.some(
+      id => get(categoryStore).category[id]?.name === name
+    );
   });
 }

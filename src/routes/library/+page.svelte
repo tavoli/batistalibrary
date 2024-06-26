@@ -1,11 +1,12 @@
 <script lang="ts">
   import { derived } from 'svelte/store';
 
-  import Tabs from '$lib/tabs.svelte';
-  import Bottom from '$lib/bottom.svelte'
-  import Menu from '$lib/menu.svelte'
-  import Search from '$lib/search.svelte';
-  import TabContent from '$lib/tab-content.svelte';
+  import Tabs from './tabs.svelte';
+  import Bottom from './bottom.svelte'
+  import Menu from './menu.svelte'
+  import Popup from './popup.svelte';
+  import Search from './search.svelte';
+  import TabContent from './tab-content.svelte';
   import { APP } from '$lib/constants';
   import { goto } from '$app/navigation';
   import {
