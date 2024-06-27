@@ -1,5 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
+  import { APP } from '$lib/constants'
   import Input from '$lib/input.svelte'
 </script>
 
@@ -23,12 +24,12 @@
           <button 
             type="button" 
             class="w-full px-4 py-2 text-white bg-red-600 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            on:click={() => goto('library/splash')}>
+            on:click={() => goto(APP.ROUTE_SIGNUP)}>
             CADASTRAR
           </button>
        </div>
        <p class="mt-2 text-center text-sm text-gray-600">
-         Já possui uma conta? &nbsp <a href="login" class="font-medium underline text-red-700 hover:text-red-500">Entrar</a>
+         Já possui uma conta? &nbsp <a href={APP.ROUTE_SIGNIN} class="font-medium underline text-red-700 hover:text-red-500">Entrar</a>
        </p>
      </div>
    </form>

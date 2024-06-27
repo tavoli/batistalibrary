@@ -10,6 +10,8 @@ export const APP = {
   ROUTE_BOOK: '/book/[id]',
   ROUTE_POST: '/post',
   ROUTE_LIST: '/library',
+  ROUTE_SIGNUP: '/signup',
+  ROUTE_SIGNIN: '/signin',
 
   OPTION_BORROW: 'option.borrow',
   OPTION_RETURN: 'option.return',

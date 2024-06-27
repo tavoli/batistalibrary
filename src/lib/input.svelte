@@ -17,12 +17,12 @@
         value={value}
         on:input={handleInput}
       />
-     <label for="remember_me" class="block ml-2 text-sm text-red-700 {className}">{label}</label>
+     <label for="remember_me" class="block ml-2 text-sm text-red-700">{label}</label>
   </div>
 {:else}
-  <div>
+  <div class={className}>
     <input 
-      class="w-full mt-1 px-3 py-2 border border-red-700 placeholder:text-red-700 {className}" 
+      class="w-full mt-1 px-3 py-2 border border-red-700 placeholder:text-red-700" 
       placeholder={placeholder}
       value={value}
       type={type}

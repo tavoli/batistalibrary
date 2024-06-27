@@ -1,5 +1,6 @@
 <script>
   import Input from '$lib/input.svelte'
+  import { signIn } from "@auth/sveltekit/client"
 </script>
 
 <main class="grid grid-rows-[0.5fr_1fr] min-h-screen">
@@ -22,9 +23,7 @@
 
       <div class="self-end">
        <div>
-          <button type="submit" class="w-full px-4 py-2 text-white bg-red-600 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-            ENTRAR
-          </button>
+          <button on:click={signIn} class="w-full px-4 py-2 text-white bg-red-600 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" />
        </div>
        <p class="mt-2 text-center text-sm text-gray-600">
          Não tem uma conta? &nbsp <a href="signup" class="font-medium underline text-red-700 hover:text-red-500">Cadastrar</a>
