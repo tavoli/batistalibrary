@@ -29,30 +29,31 @@
     Desbrave sua biblioteca com facilidade - organize e controle empréstimos
   </p>
 
-  <div class="self-end flex flex-col py-16 gap-4 mx-16 bg-white p-8 shadow-md">
+  {#if data.session}
+    <div class="self-end flex flex-col py-16 gap-4 mx-16 bg-white p-8 shadow-md">
+        <div class="flex flex-col items-center gap-1 w-full">
+          <input 
+            class="w-full mt-1 px-3 py-2 border border-red-700 placeholder:text-red-700 text-center mb-4" 
+            placeholder="nome da biblioteca"
+            type="text"
+            bind:value={libraryName}
+          />
 
-    {#if data.session}
-      <div class="flex flex-col items-center gap-1 w-full">
-        <input 
-          class="w-full mt-1 px-3 py-2 border border-red-700 placeholder:text-red-700 text-center mb-4" 
-          placeholder="nome da biblioteca"
-          type="text"
-          bind:value={libraryName}
-        />
+          <span class="text-gray-600 mb-1">Entrar como <b>{data.session.user.name}</b></span>
 
-        <span class="text-gray-600 mb-1">Entrar como <b>{data.session.user.name}</b></span>
+          <img src={data.session.user.image} class="w-16 h-16 rounded-full" alt="User Avatar" />
 
-        <img src={data.session.user.image} class="w-16 h-16 rounded-full" alt="User Avatar" />
-
-        <button class="mt-4 btn btn-primary flex items-center justify-center gap-2 py-2 px-4 rounded-md" on:click={handleLibraryAccess}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 7l5 5-5 5V7zm5 0l5 5-5 5V7z" fill="currentColor"/>
-          </svg>
-          Acessar Biblioteca
-        </button>
-      </div>
+          <button class="mt-4 btn btn-primary flex items-center justify-center gap-2 py-2 px-4 rounded-md" on:click={handleLibraryAccess}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 7l5 5-5 5V7zm5 0l5 5-5 5V7z" fill="currentColor"/>
+            </svg>
+            Acessar Biblioteca
+          </button>
+        </div>
+    </div>
     {:else}
-      <SignIn class="w-full grid shadow-md p-2" provider="google" signInPage="signin">
+    <div class="flex flex-col w-48 mx-auto">
+      <SignIn class="w-full grid shadow-md p-2 bg-red-700" provider="google" signInPage="signin">
         <div slot="submitButton" class="flex items-center gap-4">
           <svg width="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
@@ -61,9 +62,9 @@
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
             <path fill="none" d="M0 0h48v48H0z"></path>
           </svg>
-          <span>Entrar com o Google</span>
+          <span class="text-white">Entrar com o Google</span>
         </div>
       </SignIn>
-    {/if}
-  </div>
+      </div>
+  {/if}
 </main>
