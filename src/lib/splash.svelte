@@ -15,7 +15,8 @@
       return
     }
 
-    const books = await getLibrary()
+    // TODO: improve the way localStorage is used
+    const books = await getLibrary(localStorage.getItem("libraryName"))
     const deps = await getPostOrEditDeps()
     
     updateLibraryStore(books)

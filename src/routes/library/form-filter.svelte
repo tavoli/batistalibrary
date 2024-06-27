@@ -3,7 +3,6 @@
 
   import { APP } from '$lib/constants'
   import { close, categoryStore, queryFilter, filterBooksByCategory } from '$lib/stores'
-  import { getLibrary } from '$lib/api'
 
   const dispatch = createEventDispatcher();
 

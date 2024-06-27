@@ -17,7 +17,8 @@
     description: null,
     available: true,
     categories: [],
-    imageUrl: null
+    imageUrl: null,
+    library: localStorage.getItem('libraryName'),
   };
 
   const errors = NewSet();

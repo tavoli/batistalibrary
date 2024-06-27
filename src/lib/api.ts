@@ -1,5 +1,5 @@
 import client from "../client"
-import type { Book } from "./store";
+import type { Book } from "./types";
 
 export const api = client;
 
@@ -14,7 +14,7 @@ export async function getPostOrEditDeps() {
   }
 }
 
-export async function getLibrary(category = ''): Promise<Book[]> {
+export async function getLibrary(library: string, category = ''): Promise<Book[]> {
   const attrs = `
     _id,
     isbn,
@@ -25,12 +25,13 @@ export async function getLibrary(category = ''): Promise<Book[]> {
     description,
     available,
     "categories": categories[]->_id,
-    "imageUrl": image.asset->url
+    "imageUrl": image.asset->url,
+    library
   `;
 
-  const query = category && category != 'Todos'
-    ? `*[_type == "books"  && "${category}" in categories[]->name] { ${attrs} }`
-    : `*[_type == "books"] { ${attrs} }`;
+  const query = category && category !== 'Todos'
+    ? `*[_type == "books" && library == "${library}" && "${category}" in categories[]->name] { ${attrs} }`
+    : `*[_type == "books" && library == "${library}"] { ${attrs} }`;
 
   const result = await client.fetch(query);
   return result;
