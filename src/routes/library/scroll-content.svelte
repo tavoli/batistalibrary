@@ -18,7 +18,7 @@
   }
 </script>
 
-<div class="mb-20 flex flex-col gap-8 p-4">
+<div class="flex flex-col gap-2 p-4">
   <slot />
 </div>
 

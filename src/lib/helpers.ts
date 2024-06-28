@@ -12,7 +12,7 @@ export function getValueAtPath(obj: any, path: string): any {
   return path.split('.').reduce((acc, key) => acc && acc[key], obj);
 }
 
-export const getImage = (book: Book) => {
+export const getImage = (book: Book | null) => {
   const defaultImage = 'https://placehold.co/200?text=sem foto';
   return book?.imageUrl ? `${book.imageUrl}?w=200&h=200&fit=min&fm=webp` : defaultImage;
 };

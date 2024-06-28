@@ -1,6 +1,8 @@
 <script>
+  import { fade, fly } from "svelte/transition";
   import { createEventDispatcher } from 'svelte';
 
+  import { page } from '$app/stores';
   import { post, update } from '$lib/api'
   import { APP } from '$lib/constants'
   import { menu, library, close, borrowBook, NewSet, toast } from '$lib/stores'
@@ -30,29 +32,32 @@
       return;
     }
 
-    try {
-      await post({
-        _type: 'borrows',
-        user,
-        phoneNumber,
-        book: { _type: 'books', _ref: $menu.id },
-        return_date: new Date(returnDate).toISOString(),
-        borrow_date: new Date().toISOString(),
-      })
+    const id = $menu.id;
 
-      await update($menu.id, {
+    post({
+      _type: 'borrows',
+      user,
+      phoneNumber,
+      book: { _type: 'books', _ref: id },
+      return_date: new Date(returnDate).toISOString(),
+      borrow_date: new Date().toISOString(),
+    })
+    .then(async () => {
+      await update(id, {
         available: false,
       })
-    } catch (err) {
+
+      borrowBook(id);
+      toast('Emprestado com sucesso!');
+    })
+    .catch((err) => {
       toast('Não foi possível emprestar o livro.');
       console.error(err);
-      return;
-    }
+    })
 
-    borrowBook($menu.id);
+    toast('Iniciando empréstimo...');
     close(APP.POPUP);
     dispatch('borrowed');
-    toast('Emprestado com sucesso!');
   }
 
   function handleCancel() {
@@ -60,7 +65,7 @@
   }
 </script>
 
-<div class="space-y-4">
+<div class="px-4 py-2 space-y-4 bg-white shadow-sm" in:fly={{ y: 100, duration: 300 }}>
   <h2 class="text-xl font-semibold text-red-700">Emprestar</h2>
   <div class="grid gap-2">
     <div class="col-span-1">

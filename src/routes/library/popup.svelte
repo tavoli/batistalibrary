@@ -1,4 +1,6 @@
 <script>
+  import { fly } from "svelte/transition";
+
   import Options from './options.svelte'
   import ReturnForm from './form-return.svelte'
   import BorrowForm from './form-borrow.svelte'
@@ -10,9 +12,7 @@
 
 
 
-<div class="flex flex-col px-4 py-2">
-  <hr class="w-2/12 h-1 bg-red-700 border-0 self-center" />
-
+<div class="flex flex-col" in:fly={{ y: 100, duration: 300 }}>
   {#if $openedBorrow}
     <BorrowForm on:borrowed={clearFilter} />
   {:else if $openedReturn}

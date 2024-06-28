@@ -1,5 +1,6 @@
 <script lang="ts">
   import { derived } from 'svelte/store';
+  import { fade, fly } from "svelte/transition";
 
   import Tabs from './tabs.svelte';
   import Bottom from './bottom.svelte'

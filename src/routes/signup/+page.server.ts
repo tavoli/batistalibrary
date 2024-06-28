@@ -7,7 +7,7 @@ const setCookie = async ({ request, cookies }: RequestEvent) => {
     const cookieValue = formData.get('library');
 
     if (typeof cookieValue === 'string') {
-        cookies.set(APP.LIBRARY, cookieValue, {
+        cookies.set(APP.LIBRARY, cookieValue.trim(), {
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 7, // 1 week
             path: '/'

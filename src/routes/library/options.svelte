@@ -1,4 +1,6 @@
 <script>
+  import { fade, fly } from "svelte/transition";
+
   import { goto } from '$app/navigation'
   import { close, open, menu } from '$lib/stores'
   import { APP } from '$lib/constants'
@@ -26,19 +28,21 @@
   }
 </script>
 
-<ul class="grid gap-3">
-  {#each data as item}
-    {#if $menu.options.includes(item.id)}
-      <li class="text-red-700 grid cursor-pointer" on:click={() => handle(item.id)}>
-        <span class="font-semibold text-lg">{item.title}</span>
-        <span class="text-xs text-gray-500">
-          {item.description}
-        </span>
-      </li>
-    {/if}
-  {/each}
-</ul>
+<div class="px-4 py-2 grid gap-3 bg-white" in:fly={{ y: -100, duration: 200 }}>
+  <ul>
+    {#each data as item}
+      {#if $menu.options.includes(item.id)}
+        <li class="text-red-700 grid cursor-pointer" on:click={() => handle(item.id)}>
+          <span class="font-semibold text-lg">{item.title}</span>
+          <span class="text-xs text-gray-500">
+            {item.description}
+          </span>
+        </li>
+      {/if}
+    {/each}
+  </ul>
 
-<button on:click={cancel} class="text-red-500 text-xl">
-  cancelar
-</button>
+  <button on:click={cancel} class="text-red-500 text-xl">
+    cancelar
+  </button>
+</div>

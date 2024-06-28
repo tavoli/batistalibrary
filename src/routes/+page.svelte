@@ -15,9 +15,9 @@
 </script>
 
 <main class="grid min-h-screen bg-gray-50">
-  <img class="w-full object-cover h-64" src="/header.png" alt="Header Image" />
+  <img class="w-full object-cover h-60" src="/header.webp" alt="Header Image" />
 
-  <h1 class="text-red-700 text-4xl font-bold self-center text-center py-16">BookBack</h1>
+  <h1 class="text-red-700 text-4xl font-bold self-center text-center">BookBack</h1>
 
   <p class="text-center px-12 mb-8 text-gray-700">
     Desbrave sua biblioteca com facilidade - organize e controle empréstimos

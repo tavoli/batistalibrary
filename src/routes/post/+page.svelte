@@ -1,6 +1,7 @@
 <script>
   import { get } from 'svelte/store';
 
+  import { page } from '$app/stores';
   import { post, api } from '$lib/api'
   import { APP } from '$lib/constants';
   import { NewSet, categoryStore, authorStore, addBookStore, updateBookStore, toast } from '$lib/stores';
@@ -20,7 +21,7 @@
     available: true,
     categories: [],
     imageUrl: null,
-    library: data.library,
+    library: $page.data.cookies.library,
   };
 
   const errors = NewSet();
@@ -118,27 +119,30 @@
         .then(res => {
           newBook.image = res.image;
           updateBookStore({ ...book, imageUrl: res.url });
-          postBook(newBook);
+          postBook(newBook, book);
         })
         .catch(err => {
-          console.error('Error uploading image:', err);
-          postBook(newBook);
-        });
+          console.error('Error creating book:', err);
+          toast('Ocorreu um erro ao tentar salvar o livro.');
+        })
     } else {
-      postBook(newBook);
+      postBook(newBook, book); // add book without image
     }
 
     toast('Salvando o novo livro...');
-    addBookStore(book);
   }
 
-  function postBook(newBook) {
-    post(newBook)
-      .then(() => toast('Novo livro adicionado com sucesso.'))
-      .catch(err => {
-        console.error('Error creating book:', err);
-        toast('Ocorreu um erro ao tentar salvar o livro.');
-      })
+  async function postBook(newBook, storeBook) {
+    console.log(newBook, storeBook);
+    try {
+      await post(newBook);
+      addBookStore(storeBook);
+      toast('Novo livro adicionado com sucesso.')
+      document.querySelector('form').reset();
+      document.getElementById('image').src = APP.NO_IMAGE;
+    } catch (err) {
+      throw new Error('Error creating book:', err);
+    }
   }
 
   function handlePreview(event) {

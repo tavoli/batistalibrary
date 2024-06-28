@@ -7,8 +7,6 @@
   import { getLibrary, getPostOrEditDeps } from "$lib/api";
   import { applicationDataLoaded, updateLibraryStore, updateCategoryStore, updateAuthorStore, type Book } from "$lib/stores"
 
-  export let data
-
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }

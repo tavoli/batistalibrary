@@ -24,7 +24,7 @@
   }
 </script>
 
-<div class="space-y-4">
+<div class="px-4 py-2 space-y-4 bg-white shadow-sm">
   <h2 class="text-xl font-semibold text-red-700 mb-1">Filtrar por</h2>
 
   <div class="grid items-center">
