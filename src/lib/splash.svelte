@@ -7,10 +7,6 @@
   import { getLibrary, getPostOrEditDeps } from "$lib/api";
   import { applicationDataLoaded, updateLibraryStore, updateCategoryStore, updateAuthorStore, type Book } from "$lib/stores"
 
-  function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
   onMount(async () => {
     if (get(applicationDataLoaded)) {
       return
@@ -22,8 +18,6 @@
     updateLibraryStore(books)
     updateCategoryStore(deps.categories)
     updateAuthorStore(deps.authors)
-
-    await sleep(500)
 
     applicationDataLoaded.set(true)
   })

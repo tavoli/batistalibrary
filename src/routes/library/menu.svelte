@@ -25,7 +25,7 @@
   }
 </script>
 
-<div class="flex justify-around py-2 shadow-xl shadow-black">
+<div class="bg-white flex justify-around py-2 shadow-xl shadow-black">
   {#each menu as item}
     <button class="text-brown-500 text-2xl" on:click={() => handleMenu(item.id)}>
       <svg width={item.size[0]} height={item.size[1]} viewBox={item.viewBox} xmlns="http://www.w3.org/2000/svg">
