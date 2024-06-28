@@ -5,6 +5,8 @@
   import { APP } from '$lib/constants';
   import { NewSet, categoryStore, authorStore, addBookStore, updateBookStore, toast } from '$lib/stores';
 
+  export let data
+
   let files = null;
   const book = {
     isbn: null,
@@ -18,7 +20,7 @@
     available: true,
     categories: [],
     imageUrl: null,
-    library: localStorage.getItem('libraryName'),
+    library: data.library,
   };
 
   const errors = NewSet();
@@ -106,9 +108,8 @@
       })),
       description: book.description,
       available: book.available,
+      library: book.library,
     }
-
-    console.log(book)
 
     book._id = book.isbn;
 

@@ -1,5 +1,5 @@
 <script>
-  import { SignIn } from "@auth/sveltekit/components"
+  import { SignIn, SignOut } from "@auth/sveltekit/components"
 
   import { goto } from '$app/navigation'
   import Input from '$lib/input.svelte'
@@ -7,52 +7,51 @@
 
   export let data;
 
-  let libraryName = '';
-
-  function handleLibraryAccess() {
-    if (libraryName.length > 0) {
-      localStorage.setItem('libraryName', libraryName);
-      goto(APP.ROUTE_LIST)
-    }
-
-    // TODO: add error message
-    // TODO: add 'you tried to say: {libraryName}' if the user type wrongly
+  async function handleDeleteCookie() {
+    fetch('/api/delete-library-cookie');
+    window.location.reload();
   }
+
 </script>
 
 <main class="grid min-h-screen bg-gray-50">
   <img class="w-full object-cover h-64" src="/header.png" alt="Header Image" />
 
-  <h1 class="text-red-700 text-4xl font-light self-center text-center py-16">Biblioteca</h1>
+  <h1 class="text-red-700 text-4xl font-bold self-center text-center py-16">BookBack</h1>
 
   <p class="text-center px-12 mb-8 text-gray-700">
     Desbrave sua biblioteca com facilidade - organize e controle empréstimos
   </p>
 
-  {#if data.session}
-    <div class="self-end flex flex-col py-16 gap-4 mx-16 bg-white p-8 shadow-md">
-        <div class="flex flex-col items-center gap-1 w-full">
-          <input 
-            class="w-full mt-1 px-3 py-2 border border-red-700 placeholder:text-red-700 text-center mb-4" 
-            placeholder="nome da biblioteca"
-            type="text"
-            bind:value={libraryName}
-          />
-
-          <span class="text-gray-600 mb-1">Entrar como <b>{data.session.user.name}</b></span>
-
-          <img src={data.session.user.image} class="w-16 h-16 rounded-full" alt="User Avatar" />
-
-          <button class="mt-4 btn btn-primary flex items-center justify-center gap-2 py-2 px-4 rounded-md" on:click={handleLibraryAccess}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 7l5 5-5 5V7zm5 0l5 5-5 5V7z" fill="currentColor"/>
-            </svg>
-            Acessar Biblioteca
+  <div class="flex flex-col w-48 mx-auto text-center">
+    {#if data.session}
+      {#if data.session.user?.image}
+        <img
+          src={data.session.user.image}
+          class="avatar w-10 mx-auto"
+          alt="User Avatar"
+        />
+      {/if}
+      <span class="signedInText">
+        <small>Logado como</small><br />
+        <strong>{data.session.user?.name ?? "User"}</strong>
+      </span>
+      <div class="mt-10 flex flex-col gap-2">
+        {#if data.cookies.library}
+          <a href="{APP.ROUTE_LIST}" class="btn btn-primary text-sm flex items-center">
+            Ir para biblioteca {data.cookies.library}
+          </a>
+          <button type="submit" class="btn btn-secondary text-sm flex items-center mt-5" on:click={handleDeleteCookie}>
+            <span>Sair da biblioteca {data.cookies.library}</span>
           </button>
-        </div>
-    </div>
+        {:else}
+          <a href="{APP.ROUTE_SIGNUP}" class="btn btn-primary text-sm">Cadastrar biblioteca</a>
+        {/if}
+        <SignOut>
+          <div slot="submitButton" class="btn btn-secondary text-sm">Entrar com outro usuário</div>
+        </SignOut>
+      </div>
     {:else}
-    <div class="flex flex-col w-48 mx-auto">
       <SignIn class="w-full grid shadow-md p-2 bg-red-700" provider="google" signInPage="signin">
         <div slot="submitButton" class="flex items-center gap-4">
           <svg width="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
@@ -65,6 +64,6 @@
           <span class="text-white">Entrar com o Google</span>
         </div>
       </SignIn>
-      </div>
-  {/if}
+    {/if}
+  </div>
 </main>

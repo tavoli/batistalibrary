@@ -1,4 +1,6 @@
 export const APP = {
+  LIBRARY: 'bookback.library',
+
   MENU: 'menu',
 
   POPUP: 'popup',

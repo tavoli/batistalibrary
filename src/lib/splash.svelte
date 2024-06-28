@@ -2,9 +2,12 @@
   import {onMount} from "svelte"
   import { get } from "svelte/store"
 
+  import { page } from '$app/stores'
   import { goto } from "$app/navigation"
   import { getLibrary, getPostOrEditDeps } from "$lib/api";
   import { applicationDataLoaded, updateLibraryStore, updateCategoryStore, updateAuthorStore, type Book } from "$lib/stores"
+
+  export let data
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
@@ -15,8 +18,7 @@
       return
     }
 
-    // TODO: improve the way localStorage is used
-    const books = await getLibrary(localStorage.getItem("libraryName"))
+    const books = await getLibrary($page.data.cookies.library)
     const deps = await getPostOrEditDeps()
     
     updateLibraryStore(books)
