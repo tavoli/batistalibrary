@@ -157,7 +157,7 @@
       <div class="mb-1 text-red-700 bg-red-500 text-white inline-block p-2">Capa do livro</div>
       <input 
         class="hidden"
-        accept="image/png, image/jpeg" 
+        accept="image/png, image/jpeg, image/webp" 
         type="file" 
         id="imageFile" 
         on:change={handlePreview} 
